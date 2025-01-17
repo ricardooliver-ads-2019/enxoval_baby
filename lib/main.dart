@@ -1,23 +1,9 @@
+import 'package:enxoval_baby/app/enxoval_baby_app.dart';
 import 'package:enxoval_baby/widgets/item_card.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
+  runApp(const EnxovalBabyApp());
 }
 
 class MyHomePage extends StatefulWidget {
@@ -44,11 +30,8 @@ class _MyHomePageState extends State<MyHomePage> {
             priority: 'Essential',
             progress: 0.5,
             itemIcon: Icons.baby_changing_station_rounded,
-            onDetails: () {
-              print('View Details');
-            },
+            onDetails: () {},
           ),
-          // Add more ItemCards here
         ],
       ),
     );
