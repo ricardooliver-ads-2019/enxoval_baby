@@ -1,4 +1,4 @@
-import 'package:enxoval_baby/app/navigation/router_app.dart';
+import 'package:enxoval_baby/navigation/app_router.dart';
 import 'package:flutter/material.dart';
 
 class EnxovalBabyApp extends StatefulWidget {
@@ -9,17 +9,17 @@ class EnxovalBabyApp extends StatefulWidget {
 }
 
 class _EnxovalBabyAppState extends State<EnxovalBabyApp> {
-  final router = RouterApp.router;
+  final router = AppRouter.router;
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'Enxoval Baby',
+      // locale: const Locale('pt', 'BR'),
+      // supportedLocales: const [Locale('pt', 'BR')],
       routerConfig: router,
-      routeInformationParser: router.routeInformationParser,
-      routeInformationProvider: router.routeInformationProvider,
-      routerDelegate: router.routerDelegate,
-      locale: const Locale('pt', 'BR'),
-      supportedLocales: const [Locale('pt', 'BR')],
+      // routeInformationParser: router.routeInformationParser,
+      // routeInformationProvider: router.routeInformationProvider,
+      // routerDelegate: router.routerDelegate,
     );
   }
 }
