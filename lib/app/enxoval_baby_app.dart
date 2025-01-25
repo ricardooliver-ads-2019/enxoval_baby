@@ -14,12 +14,7 @@ class _EnxovalBabyAppState extends State<EnxovalBabyApp> {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'Enxoval Baby',
-      // locale: const Locale('pt', 'BR'),
-      // supportedLocales: const [Locale('pt', 'BR')],
       routerConfig: router,
-      // routeInformationParser: router.routeInformationParser,
-      // routeInformationProvider: router.routeInformationProvider,
-      // routerDelegate: router.routerDelegate,
     );
   }
 }
