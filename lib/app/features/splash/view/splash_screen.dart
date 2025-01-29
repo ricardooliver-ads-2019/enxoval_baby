@@ -1,6 +1,8 @@
+import 'package:enxoval_baby/app/features/home_enxoval/utils/routes/home_enxoval_routes.dart';
 import 'package:enxoval_baby/app/features/splash/widgets/animated_thought_widget.dart';
 import 'package:enxoval_baby/app/utils/image_paths.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -11,11 +13,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   void navigationTo() {
-    //   if () {
-    //     login
-    //   } else {
-    //     home
-    //   }
+    context.go(HomeEnxovalRoutes.homeEnxoval.path);
   }
 
   @override

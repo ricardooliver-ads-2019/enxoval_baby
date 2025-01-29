@@ -27,6 +27,8 @@ class ItemCard extends StatelessWidget {
     return GestureDetector(
       onTap: onDetails,
       child: Card(
+        shadowColor: Colors.transparent,
+        color: Colors.transparent,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),
