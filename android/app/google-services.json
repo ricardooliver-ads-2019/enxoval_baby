@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "68163902008",
+    "project_id": "enxovalbaby-d4846",
+    "storage_bucket": "enxovalbaby-d4846.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:68163902008:android:1f5c700286f5e40ac424cd",
+        "android_client_info": {
+          "package_name": "com.example.enxoval_baby"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDgeDw24OW_ddHCmwFrR_NZ1yZToVj4Os0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
