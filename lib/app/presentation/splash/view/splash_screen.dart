@@ -1,6 +1,6 @@
 import 'package:enxoval_baby/app/core/utils/image_paths.dart';
-import 'package:enxoval_baby/app/features/login/utils/login_routes.dart';
-import 'package:enxoval_baby/app/features/splash/widgets/animated_thought_widget.dart';
+import 'package:enxoval_baby/app/presentation/login/utils/login_routes.dart';
+import 'package:enxoval_baby/app/presentation/splash/widgets/animated_thought_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 

@@ -1,4 +1,4 @@
-import 'package:enxoval_baby/app/features/home_enxoval/widgets/item_card.dart';
+import 'package:enxoval_baby/app/presentation/home_enxoval/widgets/item_card.dart';
 import 'package:flutter/material.dart';
 
 class HomeEnxovalScreen extends StatefulWidget {

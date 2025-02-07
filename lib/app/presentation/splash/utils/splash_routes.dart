@@ -1,4 +1,4 @@
-import 'package:enxoval_baby/app/features/splash/view/splash_screen.dart';
+import 'package:enxoval_baby/app/presentation/splash/view/splash_screen.dart';
 import 'package:go_router/go_router.dart';
 
 enum SplashRoutes {
