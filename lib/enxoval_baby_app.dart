@@ -1,4 +1,4 @@
-import 'package:enxoval_baby/config/navigation/app_router.dart';
+import 'package:enxoval_baby/app/core/config/navigation/app_router.dart';
 import 'package:flutter/material.dart';
 
 class EnxovalBabyApp extends StatefulWidget {
