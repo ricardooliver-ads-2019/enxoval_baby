@@ -1,4 +1,4 @@
-import 'package:enxoval_baby/app/utils/image_paths.dart';
+import 'package:enxoval_baby/app/core/utils/image_paths.dart';
 import 'package:flutter/material.dart';
 
 class AnimatedThoughtWidget extends StatefulWidget {

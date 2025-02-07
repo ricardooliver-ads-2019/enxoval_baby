@@ -1,4 +1,4 @@
-import 'package:enxoval_baby/app/utils/validators/validators/text_validator.dart';
+import 'package:enxoval_baby/app/core/utils/validators/validators/text_validator.dart';
 
 class EmailValidator implements TextValidator {
   @override

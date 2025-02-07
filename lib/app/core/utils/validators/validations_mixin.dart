@@ -1,8 +1,8 @@
-import 'package:enxoval_baby/app/utils/validators/validation_messages_enum.dart';
-import 'package:enxoval_baby/app/utils/validators/validators/email_validator.dart';
-import 'package:enxoval_baby/app/utils/validators/validators/full_name_validator.dart';
-import 'package:enxoval_baby/app/utils/validators/validators/name_validator.dart';
-import 'package:enxoval_baby/app/utils/validators/validators_null.dart';
+import 'package:enxoval_baby/app/core/utils/validators/validation_messages_enum.dart';
+import 'package:enxoval_baby/app/core/utils/validators/validators/email_validator.dart';
+import 'package:enxoval_baby/app/core/utils/validators/validators/full_name_validator.dart';
+import 'package:enxoval_baby/app/core/utils/validators/validators/name_validator.dart';
+import 'package:enxoval_baby/app/core/utils/validators/validators_null.dart';
 
 mixin ValidationsMixin {
   String? nameValidator(String? name, [String? message]) {
