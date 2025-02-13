@@ -1,7 +1,9 @@
 import 'package:design_system/design_system.dart';
+import 'package:enxoval_baby/app/core/config/injector/injection.dart';
 import 'package:enxoval_baby/app/core/utils/app_strings.dart';
 import 'package:enxoval_baby/app/core/utils/validators/validations_mixin.dart';
 import 'package:enxoval_baby/app/presentation/home_enxoval/utils/routes/home_enxoval_routes.dart';
+import 'package:enxoval_baby/app/presentation/login/view_model/login_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -13,15 +15,23 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> with ValidationsMixin {
+  final controller = Injection.inject<LoginViewModel>();
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
 
   @override
+  void initState() {
+    super.initState();
+    controller.addListener(_onResult);
+  }
+
+  @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    controller.removeListener(_onResult);
     super.dispose();
   }
 
@@ -33,8 +43,10 @@ class _LoginScreenState extends State<LoginScreen> with ValidationsMixin {
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
-      // Simular processo de login
-      navigationTo();
+      controller.login(
+        email: _emailController.value.text,
+        password: _passwordController.value.text,
+      );
     }
   }
 
@@ -111,18 +123,24 @@ class _LoginScreenState extends State<LoginScreen> with ValidationsMixin {
               _sizedBoxVerticalDSSpacingBodied,
               SizedBox(
                 width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _submitForm,
-                  style: ElevatedButton.styleFrom(
-                    padding:
-                        EdgeInsets.symmetric(vertical: DSSpacing.xxsmall.value),
-                    shape: RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.circular(DSBorderRadius.medium.value),
-                    ),
-                  ),
-                  child: Text(AppStrings.entrar.text),
-                ),
+                child: ListenableBuilder(
+                    listenable: controller,
+                    builder: (context, child) {
+                      return ElevatedButton(
+                        onPressed: controller.isLoading ? null : _submitForm,
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(
+                              vertical: DSSpacing.xxsmall.value),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                                DSBorderRadius.medium.value),
+                          ),
+                        ),
+                        child: controller.isLoading
+                            ? const CircularProgressIndicator()
+                            : Text(AppStrings.entrar.text),
+                      );
+                    }),
               ),
               _sizedBoxVerticalDSSpacingBodied,
               Row(
@@ -142,5 +160,26 @@ class _LoginScreenState extends State<LoginScreen> with ValidationsMixin {
         ),
       ),
     );
+  }
+
+  void _onResult() {
+    if (controller.isSuccess) {
+      navigationTo();
+    }
+
+    if (controller.erroMensage != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(controller.erroMensage!),
+          action: SnackBarAction(
+            label: "Erro",
+            onPressed: () => controller.login(
+              email: _emailController.value.text,
+              password: _passwordController.value.text,
+            ),
+          ),
+        ),
+      );
+    }
   }
 }

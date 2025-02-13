@@ -1,6 +1,6 @@
 // ignore_for_file: library_prefixes
 
-import 'package:enxoval_baby/app/core/utils/failures/failure.dart'
+import 'package:enxoval_baby/app/core/utils/failures/app_failure.dart'
     as appFailures;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:result_dart/result_dart.dart';
@@ -26,7 +26,17 @@ class FirebaseAuthDatasource {
           ),
         );
       }
+
       return Success(result.user!);
+    } on Exception catch (e) {
+      return Failure(e);
+    }
+  }
+
+  AsyncResult<Unit> logout() async {
+    try {
+      await _auth.signOut();
+      return const Success(unit);
     } on Exception catch (e) {
       return Failure(e);
     }
