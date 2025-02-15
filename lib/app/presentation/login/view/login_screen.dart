@@ -18,7 +18,9 @@ class _LoginScreenState extends State<LoginScreen> with ValidationsMixin {
   final controller = Injection.inject<LoginViewModel>();
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
+  final _emailFocus = FocusNode();
   final _passwordController = TextEditingController();
+  final _passwordFocus = FocusNode();
   bool _obscurePassword = true;
 
   @override
@@ -30,7 +32,9 @@ class _LoginScreenState extends State<LoginScreen> with ValidationsMixin {
   @override
   void dispose() {
     _emailController.dispose();
+    _emailFocus.dispose();
     _passwordController.dispose();
+    _passwordFocus.dispose();
     controller.removeListener(_onResult);
     super.dispose();
   }
@@ -75,31 +79,20 @@ class _LoginScreenState extends State<LoginScreen> with ValidationsMixin {
                     ),
               ),
               _sizedBoxVerticalDSSpacingBodied,
-              TextFormField(
+              DSInputTextFormField(
                 controller: _emailController,
-                decoration: InputDecoration(
-                  labelText: AppStrings.email.text,
-                  prefixIcon: const Icon(Icons.email),
-                ),
-                keyboardType: TextInputType.emailAddress,
+                focus: _emailFocus,
+                label: AppStrings.email.text,
+                prefixIcon: const Icon(Icons.email),
+                textInputType: TextInputType.emailAddress,
                 validator: emailValidator,
               ),
               _sizedBoxVerticalDSSpacingBodied,
-              TextFormField(
+              DSInputPassword(
                 controller: _passwordController,
-                decoration: InputDecoration(
-                  labelText: AppStrings.senha.text,
-                  prefixIcon: const Icon(Icons.lock),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _obscurePassword
-                          ? Icons.visibility_off
-                          : Icons.visibility,
-                    ),
-                    onPressed: _togglePasswordVisibility,
-                  ),
-                ),
-                obscureText: _obscurePassword,
+                focus: _passwordFocus,
+                label: AppStrings.senha.text,
+                prefixIcon: const Icon(Icons.lock),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor insira sua senha';

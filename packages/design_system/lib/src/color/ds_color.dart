@@ -27,6 +27,15 @@ class DSColors {
   static MaterialColor alertWarning = generatedColor([0xFFDA8607]);
   static MaterialColor alertError = generatedColor([0xFFDA1E28]);
 
+  // Text
+  static const Color textDefault = Color(0xFF000000);
+  static const Color textGray = Color(0xFF8C8C8C);
+
+  // Border
+  static const Color borderDefault = Color(0xFF8C8C8C);
+  static const Color borderFocus = Color(0xFF000000);
+  static const Color borderDisabled = Color(0xFFBFBFBF);
+
   static void setColors({
     List<int>? primaryColor,
     List<int>? primaryVariantColor,
@@ -80,7 +89,7 @@ class DSColors {
   static const Color transparent = Colors.transparent;
   static const Color neutralBlack = Color(0xFF000000);
   static const Color neutralWhite = Color(0xFFFFFFFF);
-  static const Color disabled = Color(0xFF898C91);
+  static const Color disabled = Color(0xFFE5E5E5);
   static const Color textButtonDisabledSolidDefault = Color(0xFFA1A3A7);
   static const Color buttonDisabledSolidDefaultBackground = Color(0xFFE7E8E9);
   // static const Color buttonDisabledSolidDefaultBackground = Color(0xFF869FAA);
