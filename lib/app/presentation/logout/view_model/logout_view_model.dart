@@ -1,4 +1,4 @@
-import 'package:enxoval_baby/app/core/utils/failures/app_failure.dart';
+import 'package:enxoval_baby/app/core/failures/app_failure.dart';
 import 'package:enxoval_baby/app/domain/repositories/auth_repository.dart';
 import 'package:flutter/material.dart';
 

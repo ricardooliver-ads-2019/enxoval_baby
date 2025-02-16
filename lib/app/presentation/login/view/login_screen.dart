@@ -1,5 +1,5 @@
 import 'package:design_system/design_system.dart';
-import 'package:enxoval_baby/app/core/config/injector/injection.dart';
+import 'package:enxoval_baby/app/config/injector/injection.dart';
 import 'package:enxoval_baby/app/core/utils/app_strings.dart';
 import 'package:enxoval_baby/app/core/utils/validators/validations_mixin.dart';
 import 'package:enxoval_baby/app/presentation/home_enxoval/utils/routes/home_enxoval_routes.dart';
@@ -21,7 +21,6 @@ class _LoginScreenState extends State<LoginScreen> with ValidationsMixin {
   final _emailFocus = FocusNode();
   final _passwordController = TextEditingController();
   final _passwordFocus = FocusNode();
-  bool _obscurePassword = true;
 
   @override
   void initState() {
@@ -37,12 +36,6 @@ class _LoginScreenState extends State<LoginScreen> with ValidationsMixin {
     _passwordFocus.dispose();
     controller.removeListener(_onResult);
     super.dispose();
-  }
-
-  void _togglePasswordVisibility() {
-    setState(() {
-      _obscurePassword = !_obscurePassword;
-    });
   }
 
   void _submitForm() {

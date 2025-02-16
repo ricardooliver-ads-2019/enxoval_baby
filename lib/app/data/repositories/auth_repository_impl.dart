@@ -1,9 +1,11 @@
-import 'package:enxoval_baby/app/core/utils/failures/app_failure.dart';
+import 'dart:developer';
+
+import 'package:enxoval_baby/app/config/injector/injection.dart';
+import 'package:enxoval_baby/app/core/handler/exception_handler.dart';
 import 'package:enxoval_baby/app/data/datasources/remote/firebase_auth_datasource.dart';
 import 'package:enxoval_baby/app/data/models/user_model.dart';
 import 'package:enxoval_baby/app/domain/entities/user_entity.dart';
 import 'package:enxoval_baby/app/domain/repositories/auth_repository.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:result_dart/result_dart.dart';
 
@@ -18,6 +20,8 @@ class AuthRepositoryImpl implements AuthRepository {
       _isAuthNotifier.value = userModel != null;
     });
   }
+
+  final handler = Injection.inject<ExceptionHandler>();
 
   @override
   ValueNotifier<bool> get isAuth => _isAuthNotifier;
@@ -38,19 +42,13 @@ class AuthRepositoryImpl implements AuthRepository {
           await _authDataSource.login(email: email, password: password);
       final user = UserModel.fromFirebase(result.getOrThrow());
       return Success(user);
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        return Failure(AuthException(errorMessage: 'Email não encontrado!'));
-      } else if (e.code == 'wrong-password') {
-        return Failure(AuthException(errorMessage: 'Senha incorreta!'));
-      } else if (e.code == 'invalid-credential') {
-        return Failure(
-            AuthException(errorMessage: 'Email ou Senha incorretos!'));
-      } else {
-        throw '';
-      }
-    } catch (e) {
+    } on Exception catch (e, stack) {
       _isAuthNotifier.value = false;
+      return Failure(handler.handle(e, stack));
+    } catch (e, stack) {
+      _isAuthNotifier.value = false;
+      log(e.toString());
+      log(stack.toString());
       throw '';
     }
   }
@@ -59,17 +57,13 @@ class AuthRepositoryImpl implements AuthRepository {
   AsyncResult<Unit> logout() async {
     try {
       return await _authDataSource.logout();
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        return Failure(AuthException(errorMessage: 'Email não encontrado!'));
-      } else if (e.code == 'wrong-password') {
-        return Failure(AuthException(errorMessage: 'Senha incorreta!'));
-      } else if (e.code == 'invalid-credential') {
-        return Failure(
-            AuthException(errorMessage: 'Email ou Senha incorretos!'));
-      } else {
-        throw '';
-      }
+    } on Exception catch (e, stack) {
+      return Failure(handler.handle(e, stack));
+    } catch (e, stack) {
+      log(e.toString());
+      log(stack.toString());
+      _isAuthNotifier.value = false;
+      throw '';
     }
   }
 }

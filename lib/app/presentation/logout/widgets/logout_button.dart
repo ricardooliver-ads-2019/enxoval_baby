@@ -1,4 +1,4 @@
-import 'package:enxoval_baby/app/core/config/injector/injection.dart';
+import 'package:enxoval_baby/app/config/injector/injection.dart';
 import 'package:enxoval_baby/app/presentation/logout/view_model/logout_view_model.dart';
 import 'package:flutter/material.dart';
 

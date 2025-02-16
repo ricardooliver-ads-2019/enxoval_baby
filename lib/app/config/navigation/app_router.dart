@@ -1,4 +1,4 @@
-import 'package:enxoval_baby/app/core/config/injector/injection.dart';
+import 'package:enxoval_baby/app/config/injector/injection.dart';
 import 'package:enxoval_baby/app/domain/repositories/auth_repository.dart';
 import 'package:enxoval_baby/app/presentation/home_enxoval/utils/routes/home_enxoval_routes.dart';
 import 'package:enxoval_baby/app/presentation/login/utils/login_routes.dart';

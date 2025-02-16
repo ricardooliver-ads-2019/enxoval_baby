@@ -1,7 +1,6 @@
 // ignore_for_file: library_prefixes
 
-import 'package:enxoval_baby/app/core/utils/failures/app_failure.dart'
-    as appFailures;
+import 'package:enxoval_baby/app/core/failures/app_failure.dart' as appFailures;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:result_dart/result_dart.dart';
 
