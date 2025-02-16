@@ -16,7 +16,7 @@ class FirebaseAuthExceptionHandler implements ExceptionMapper {
             errorMessage: 'Email ou Senha incorretos!',
           );
         default:
-          throw 'FirebaseAuthException';
+          throw 'Erro não tratado no FirebaseAuthException';
       }
     } else {
       return null;

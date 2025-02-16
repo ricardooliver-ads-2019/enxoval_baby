@@ -42,7 +42,7 @@ class FirebaseExceptionHandler implements ExceptionMapper {
           );
 
         default:
-          throw 'FirebaseException';
+          throw 'Erro não tratado no FirebaseException';
       }
     } else {
       return null;

@@ -1,28 +1,23 @@
-import 'dart:developer';
+import 'package:enxoval_baby/app/config/injector/injection.dart';
+import 'package:enxoval_baby/app/core/handler/exception_mapper.dart';
+import 'package:enxoval_baby/app/core/log/log_app.dart';
 
 class ExceptionHandler {
-  final List<Exception? Function(Exception, StackTrace)> _customHandlers;
+  final List<ExceptionMapper> _customHandlers;
+  final _logApp = Injection.inject<LogApp>();
 
-  ExceptionHandler({List<Exception? Function(Exception, StackTrace)>? handlers})
-      : _customHandlers = handlers ?? [];
+  ExceptionHandler({required List<ExceptionMapper> handlers})
+      : _customHandlers = handlers;
 
   Exception handle(Exception exception, StackTrace stackTrace) {
     for (final handler in _customHandlers) {
-      final result = handler(exception, stackTrace);
+      final result = handler.mapException(exception, stackTrace);
       if (result != null) {
-        _logError(result, stackTrace);
+        _logApp.logError(result, stackTrace);
         return result;
       }
     }
-    _logError(exception, stackTrace);
-    throw '';
-  }
-
-  void _logError(Exception exception, StackTrace stackTrace) {
-    // Exemplo de log detalhado
-    log(
-      'Erro: ${exception.toString()}\nStackTrace: ${stackTrace.toString()}',
-      name: 'ExceptionHandler',
-    );
+    _logApp.logError(exception, stackTrace);
+    throw 'Exception não encontrada';
   }
 }

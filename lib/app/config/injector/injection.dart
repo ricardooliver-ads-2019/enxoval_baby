@@ -1,6 +1,7 @@
 import 'package:enxoval_baby/app/core/handler/exception_handler.dart';
 import 'package:enxoval_baby/app/core/handler/exception_mapper/firebas_exception_handler.dart';
 import 'package:enxoval_baby/app/core/handler/exception_mapper/firebase_auth_exception_handler.dart';
+import 'package:enxoval_baby/app/core/log/log_app.dart';
 import 'package:enxoval_baby/app/data/datasources/remote/firebase_auth_datasource.dart';
 import 'package:enxoval_baby/app/data/repositories/auth_repository_impl.dart';
 import 'package:enxoval_baby/app/domain/repositories/auth_repository.dart';
@@ -17,6 +18,7 @@ class Injection {
     _setupUsecases();
     _setupViewModels();
     _setupHandles();
+    _setupUtils();
   }
 
   void _setupDatasources() {
@@ -43,12 +45,17 @@ class Injection {
   }
 
   void _setupUsecases() {}
+
+  void _setupUtils() {
+    inject.registerFactory(() => LogApp());
+  }
+
   void _setupHandles() {
     inject.registerLazySingleton(
       () => ExceptionHandler(
         handlers: [
-          FirebaseAuthExceptionHandler().mapException,
-          FirebaseExceptionHandler().mapException,
+          FirebaseAuthExceptionHandler(),
+          FirebaseExceptionHandler(),
         ],
       ),
     );
