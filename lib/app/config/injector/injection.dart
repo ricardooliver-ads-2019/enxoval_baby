@@ -13,11 +13,11 @@ class Injection {
   static GetIt get inject => GetIt.instance;
 
   void setup() {
+    _setupHandles();
     _setupDatasources();
     _setupRepositories();
     _setupUsecases();
     _setupViewModels();
-    _setupHandles();
     _setupUtils();
   }
 
@@ -27,7 +27,7 @@ class Injection {
 
   void _setupRepositories() {
     inject.registerLazySingleton<AuthRepository>(
-      () => AuthRepositoryImpl(auth: inject()),
+      () => AuthRepositoryImpl(auth: inject(), handler: inject()),
     );
   }
 

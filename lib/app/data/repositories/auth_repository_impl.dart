@@ -1,6 +1,4 @@
-import 'package:enxoval_baby/app/config/injector/injection.dart';
 import 'package:enxoval_baby/app/core/handler/exception_handler.dart';
-import 'package:enxoval_baby/app/core/log/log_app.dart';
 import 'package:enxoval_baby/app/data/datasources/remote/firebase_auth_datasource.dart';
 import 'package:enxoval_baby/app/data/models/user_model.dart';
 import 'package:enxoval_baby/app/domain/entities/user_entity.dart';
@@ -10,18 +8,18 @@ import 'package:result_dart/result_dart.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final FirebaseAuthDatasource _authDataSource;
+  final ExceptionHandler _handler;
   final ValueNotifier<bool> _isAuthNotifier = ValueNotifier<bool>(false);
   AuthRepositoryImpl({
     required FirebaseAuthDatasource auth,
-  }) : _authDataSource = auth {
+    required ExceptionHandler handler,
+  })  : _handler = handler,
+        _authDataSource = auth {
     _authDataSource.authStateChanges.listen((user) {
       final userModel = user != null ? UserModel.fromFirebase(user) : null;
       _isAuthNotifier.value = userModel != null;
     });
   }
-
-  final _handler = Injection.inject<ExceptionHandler>();
-  final _log = Injection.inject<LogApp>();
 
   @override
   ValueNotifier<bool> get isAuth => _isAuthNotifier;
@@ -45,9 +43,9 @@ class AuthRepositoryImpl implements AuthRepository {
     } on Exception catch (e, stack) {
       _isAuthNotifier.value = false;
       return Failure(_handler.handle(e, stack));
-    } catch (e, stack) {
+    } catch (e) {
       _isAuthNotifier.value = false;
-      _log.logError(e, stack);
+
       throw '';
     }
   }
@@ -59,8 +57,7 @@ class AuthRepositoryImpl implements AuthRepository {
     } on Exception catch (e, stack) {
       _isAuthNotifier.value = false;
       return Failure(_handler.handle(e, stack));
-    } catch (e, stack) {
-      _log.logError(e, stack);
+    } catch (e) {
       _isAuthNotifier.value = false;
       throw '';
     }
