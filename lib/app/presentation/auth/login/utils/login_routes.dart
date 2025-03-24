@@ -1,4 +1,4 @@
-import 'package:enxoval_baby/app/presentation/login/view/login_screen.dart';
+import 'package:enxoval_baby/app/presentation/auth/login/view/login_screen.dart';
 import 'package:go_router/go_router.dart';
 
 enum LoginRoutes {

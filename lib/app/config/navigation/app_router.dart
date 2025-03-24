@@ -1,7 +1,7 @@
 import 'package:enxoval_baby/app/config/injector/injection.dart';
 import 'package:enxoval_baby/app/domain/repositories/auth_repository.dart';
+import 'package:enxoval_baby/app/presentation/auth/login/utils/login_routes.dart';
 import 'package:enxoval_baby/app/presentation/home_enxoval/utils/routes/home_enxoval_routes.dart';
-import 'package:enxoval_baby/app/presentation/login/utils/login_routes.dart';
 import 'package:enxoval_baby/app/presentation/splash/utils/splash_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
