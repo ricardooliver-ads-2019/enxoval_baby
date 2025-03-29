@@ -1,6 +1,7 @@
 enum ImagePaths {
   pregnant('pregnant.png'),
-  thought('thought.png');
+  thought('thought.png'),
+  googleLogo('google_logo.png');
 
   final String name;
   const ImagePaths(this.name);
@@ -18,4 +19,13 @@ enum ImageThoughtPaths {
   const ImageThoughtPaths(this.name);
 
   String get path => 'assets/images/$name';
+}
+
+enum ImageIconsPaths {
+  googleLogo('google_logo.png');
+
+  final String name;
+  const ImageIconsPaths(this.name);
+
+  String get path => 'assets/icons/$name';
 }

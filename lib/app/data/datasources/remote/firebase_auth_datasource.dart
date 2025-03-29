@@ -32,6 +32,23 @@ class FirebaseAuthDatasource {
     }
   }
 
+  AsyncResult<User> loginGoogle({required AuthCredential credential}) async {
+    try {
+      final result = await _auth.signInWithCredential(credential);
+      if (result.user == null) {
+        return Failure(
+          appFailures.AuthException(
+            errorMessage: 'Usuario não encontrado',
+          ),
+        );
+      }
+
+      return Success(result.user!);
+    } on Exception catch (e) {
+      return Failure(e);
+    }
+  }
+
   AsyncResult<Unit> logout() async {
     try {
       await _auth.signOut();
