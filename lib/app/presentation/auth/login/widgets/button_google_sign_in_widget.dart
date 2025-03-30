@@ -24,7 +24,7 @@ class _ButtonGoogleSignInWidgetState extends State<ButtonGoogleSignInWidget> {
         ),
         onPressed: () async {
           final googleUser = await _googleSignIn.signIn();
-          if (googleUser != null) print(googleUser.email);
+          if (googleUser != null) debugPrint(googleUser.email);
         },
       ),
     );

@@ -15,6 +15,12 @@ class FirebaseAuthExceptionHandler implements ExceptionMapper {
             stackTrace: stackTrace,
             errorMessage: 'Email ou Senha incorretos!',
           );
+        case 'email-already-in-use':
+          return AuthException(
+            exception: e,
+            stackTrace: stackTrace,
+            errorMessage: 'Este email já está cadastrado!',
+          );
         default:
           throw 'Erro não tratado no FirebaseAuthException';
       }

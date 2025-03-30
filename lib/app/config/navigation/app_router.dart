@@ -1,6 +1,6 @@
 import 'package:enxoval_baby/app/config/injector/injection.dart';
 import 'package:enxoval_baby/app/domain/repositories/auth_repository.dart';
-import 'package:enxoval_baby/app/presentation/auth/login/utils/login_routes.dart';
+import 'package:enxoval_baby/app/presentation/auth/utils/auth_routes.dart';
 import 'package:enxoval_baby/app/presentation/home_enxoval/utils/routes/home_enxoval_routes.dart';
 import 'package:enxoval_baby/app/presentation/splash/utils/splash_routes.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +16,7 @@ class AppRouter {
       routes: [
         ...SplashRoutes.routes,
         ...HomeEnxovalRoutes.routes,
-        ...LoginRoutes.routes,
+        ...AuthRoutes.routes,
       ],
     );
   }
@@ -24,14 +24,21 @@ class AppRouter {
 
 Future<String?> _redirect(BuildContext context, GoRouterState state) async {
   final isAuthenticated = Injection.inject<AuthRepository>().isAuth.value;
-  final isLoginRoute = state.matchedLocation == LoginRoutes.login.path;
+  final isLoginRoute = state.matchedLocation == AuthRoutes.login.path;
+  final isRegisterRoute = state.matchedLocation == AuthRoutes.register.path;
+
+  final isForgotPasswordRoute =
+      state.matchedLocation == AuthRoutes.forgotPassword.path;
+
   if (state.matchedLocation != SplashRoutes.splash.path) {
     if (!isAuthenticated) {
-      return isLoginRoute ? null : LoginRoutes.login.path;
-    }
-
-    if (isLoginRoute) {
-      return HomeEnxovalRoutes.homeEnxoval.path;
+      if (!isLoginRoute && !isRegisterRoute && !isForgotPasswordRoute) {
+        return AuthRoutes.login.path;
+      }
+    } else {
+      if (isLoginRoute || isRegisterRoute) {
+        return HomeEnxovalRoutes.homeEnxoval.path;
+      }
     }
   }
 

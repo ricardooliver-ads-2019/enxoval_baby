@@ -9,6 +9,25 @@ class FirebaseAuthDatasource {
 
   Stream<User?> get authStateChanges => _auth.authStateChanges();
 
+  AsyncResult<User> register({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      final result = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      if (result.user == null) {
+        return Failure(
+            appFailures.AuthException(errorMessage: 'Erro ao criar usuário.'));
+      }
+      return Success(result.user!);
+    } on Exception catch (e) {
+      return Failure(e);
+    }
+  }
+
   AsyncResult<User> login({
     required String email,
     required String password,
@@ -44,6 +63,15 @@ class FirebaseAuthDatasource {
       }
 
       return Success(result.user!);
+    } on Exception catch (e) {
+      return Failure(e);
+    }
+  }
+
+  AsyncResult<Unit> resetPassword({required String email}) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+      return const Success(unit);
     } on Exception catch (e) {
       return Failure(e);
     }

@@ -31,6 +31,25 @@ class AuthRepositoryImpl implements AuthRepository {
       });
 
   @override
+  AsyncResult<UserEntity> register({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      final result =
+          await _authDataSource.register(email: email, password: password);
+      final user = UserModel.fromFirebase(result.getOrThrow());
+      return Success(user);
+    } on Exception catch (e, stack) {
+      _isAuthNotifier.value = false;
+      return Failure(_handler.handle(e, stack));
+    } catch (e) {
+      _isAuthNotifier.value = false;
+      throw '';
+    }
+  }
+
+  @override
   AsyncResult<UserEntity> login({
     required String email,
     required String password,
@@ -46,6 +65,17 @@ class AuthRepositoryImpl implements AuthRepository {
     } catch (e) {
       _isAuthNotifier.value = false;
 
+      throw '';
+    }
+  }
+
+  @override
+  AsyncResult<Unit> resetPassword({required String email}) async {
+    try {
+      return await _authDataSource.resetPassword(email: email);
+    } on Exception catch (e, stack) {
+      return Failure(_handler.handle(e, stack));
+    } catch (e) {
       throw '';
     }
   }

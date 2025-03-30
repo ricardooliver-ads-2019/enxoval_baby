@@ -3,6 +3,7 @@ import 'package:enxoval_baby/app/config/injector/injection.dart';
 import 'package:enxoval_baby/app/core/utils/app_strings.dart';
 import 'package:enxoval_baby/app/core/utils/validators/validations_mixin.dart';
 import 'package:enxoval_baby/app/presentation/auth/login/view_model/login_view_model.dart';
+import 'package:enxoval_baby/app/presentation/auth/utils/auth_routes.dart';
 import 'package:enxoval_baby/app/presentation/home_enxoval/utils/routes/home_enxoval_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -15,7 +16,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> with ValidationsMixin {
-  final controller = Injection.inject<LoginViewModel>();
+  final _loginViewModel = Injection.inject<LoginViewModel>();
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _emailFocus = FocusNode();
@@ -25,7 +26,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationsMixin {
   @override
   void initState() {
     super.initState();
-    controller.addListener(_onResult);
+    _loginViewModel.addListener(_onResult);
   }
 
   @override
@@ -34,13 +35,13 @@ class _LoginScreenState extends State<LoginScreen> with ValidationsMixin {
     _emailFocus.dispose();
     _passwordController.dispose();
     _passwordFocus.dispose();
-    controller.removeListener(_onResult);
+    _loginViewModel.removeListener(_onResult);
     super.dispose();
   }
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
-      controller.login(
+      _loginViewModel.login(
         email: _emailController.value.text,
         password: _passwordController.value.text,
       );
@@ -101,7 +102,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationsMixin {
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: () {
-                    // Navegar para tela de recuperação de senha
+                    context.push(AuthRoutes.forgotPassword.path);
                   },
                   child: Text(AppStrings.esqueceuASenha.text),
                 ),
@@ -110,10 +111,11 @@ class _LoginScreenState extends State<LoginScreen> with ValidationsMixin {
               SizedBox(
                 width: double.infinity,
                 child: ListenableBuilder(
-                    listenable: controller,
+                    listenable: _loginViewModel,
                     builder: (context, child) {
                       return ElevatedButton(
-                        onPressed: controller.isLoading ? null : _submitForm,
+                        onPressed:
+                            _loginViewModel.isLoading ? null : _submitForm,
                         style: ElevatedButton.styleFrom(
                           padding: EdgeInsets.symmetric(
                               vertical: DSSpacing.xxsmall.value),
@@ -122,7 +124,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationsMixin {
                                 DSBorderRadius.medium.value),
                           ),
                         ),
-                        child: controller.isLoading
+                        child: _loginViewModel.isLoading
                             ? const CircularProgressIndicator()
                             : Text(AppStrings.entrar.text),
                       );
@@ -135,7 +137,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationsMixin {
                   Text(AppStrings.naoTemUmaConta.text),
                   TextButton(
                     onPressed: () {
-                      // Navegar para tela de cadastro
+                      context.push(AuthRoutes.register.path);
                     },
                     child: Text(AppStrings.criarConta.text),
                   ),
@@ -149,17 +151,17 @@ class _LoginScreenState extends State<LoginScreen> with ValidationsMixin {
   }
 
   void _onResult() {
-    if (controller.isSuccess) {
+    if (_loginViewModel.isSuccess) {
       navigationTo();
     }
 
-    if (controller.erroMensage != null) {
+    if (_loginViewModel.erroMensage != null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(controller.erroMensage!),
+          content: Text(_loginViewModel.erroMensage!),
           action: SnackBarAction(
             label: "Erro",
-            onPressed: () => controller.login(
+            onPressed: () => _loginViewModel.login(
               email: _emailController.value.text,
               password: _passwordController.value.text,
             ),
