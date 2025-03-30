@@ -2,6 +2,7 @@ import 'package:enxoval_baby/app/core/utils/validators/validation_messages_enum.
 import 'package:enxoval_baby/app/core/utils/validators/validators/email_validator.dart';
 import 'package:enxoval_baby/app/core/utils/validators/validators/full_name_validator.dart';
 import 'package:enxoval_baby/app/core/utils/validators/validators/name_validator.dart';
+import 'package:enxoval_baby/app/core/utils/validators/validators/password_validator.dart';
 import 'package:enxoval_baby/app/core/utils/validators/validators_null.dart';
 
 mixin ValidationsMixin {
@@ -35,11 +36,79 @@ mixin ValidationsMixin {
     return error;
   }
 
-  String? genericValidator(String? text, [int minLength = 3]) {
+  String? passwordValidator(String? password, [String? message]) {
+    var error = genericValidator(password, 6,
+        ValidationMessagesEnum.aSenhaDeveTerNoMinimo6Caracteres.text);
+
+    error ??= PasswordValidator().isValidText(text: password!)
+        ? null
+        : validations([
+            () => _senhaContemNumero(password),
+            () => _senhaContemLetraMaiuscula(password),
+            () => _senhaContemMinuscula(password),
+            () => senhaContemCaracteresEspecial(password),
+          ]);
+
+    return error;
+  }
+
+  String? _senhaContemNumero(String text) {
+    RegExp regex = RegExp(r'\d');
+
+    bool contemNumeros = regex.hasMatch(text);
+
+    if (contemNumeros) {
+      return null;
+    } else {
+      return ValidationMessagesEnum.aSenhaDeveConterNumero.text;
+    }
+  }
+
+  String? _senhaContemLetraMaiuscula(String text) {
+    RegExp regex = RegExp(r'[A-Z]');
+
+    bool contemLetraMaiuscula = regex.hasMatch(text);
+
+    if (contemLetraMaiuscula) {
+      return null;
+    } else {
+      return ValidationMessagesEnum
+          .aSenhaDeveConterPeloMenosUmaLentraMaiuscula.text;
+    }
+  }
+
+  String? _senhaContemMinuscula(String text) {
+    RegExp regex = RegExp(r'[a-z]');
+
+    bool contemLetraMinuscula = regex.hasMatch(text);
+
+    if (contemLetraMinuscula) {
+      return null;
+    } else {
+      return ValidationMessagesEnum
+          .aSenhaDeveConterPeloMenosUmaLentraMinuscula.text;
+    }
+  }
+
+  String? senhaContemCaracteresEspecial(String text) {
+    RegExp regex = RegExp(r'[!@#\$%^&*(),.?":{}|<>]');
+
+    bool contemCaracterEspecial = regex.hasMatch(text);
+
+    if (contemCaracterEspecial) {
+      return null;
+    } else {
+      return ValidationMessagesEnum
+          .aSenhaDeveConterPeloMenosUmCaracterEspecial.text;
+    }
+  }
+
+  String? genericValidator(String? text, [int minLength = 3, String? message]) {
     if (ValidatorsNull.isNotNullAndNotEmpty(text)) {
       if (text!.length < minLength) {
-        return ValidationMessagesEnum
-            .porFavorPreenchaComAInformacaoSolicitada.text;
+        return message ??
+            ValidationMessagesEnum
+                .porFavorPreenchaComAInformacaoSolicitada.text;
       }
 
       return null;
