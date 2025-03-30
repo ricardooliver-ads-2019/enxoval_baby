@@ -1,4 +1,5 @@
 import 'package:enxoval_baby/app/config/injector/injection.dart';
+import 'package:enxoval_baby/app/core/utils/error_messages_enum.dart';
 import 'package:enxoval_baby/app/presentation/auth/logout/view_model/logout_view_model.dart';
 import 'package:flutter/material.dart';
 
@@ -42,7 +43,7 @@ class _LogoutButtonState extends State<LogoutButton> {
         SnackBar(
           content: Text(logoutViewModel.erroMensage!),
           action: SnackBarAction(
-            label: "Erro",
+            label: ErrorMessagesEnum.erro.message,
             onPressed: () {},
           ),
         ),

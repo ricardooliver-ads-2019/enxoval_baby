@@ -1,9 +1,11 @@
 import 'package:design_system/design_system.dart';
 import 'package:enxoval_baby/app/config/injector/injection.dart';
 import 'package:enxoval_baby/app/core/utils/app_strings.dart';
-import 'package:enxoval_baby/app/core/utils/validators/validation_messages_enum.dart';
+import 'package:enxoval_baby/app/core/utils/error_messages_enum.dart';
+import 'package:enxoval_baby/app/core/utils/validation_messages_enum.dart';
 import 'package:enxoval_baby/app/core/utils/validators/validations_mixin.dart';
 import 'package:enxoval_baby/app/presentation/auth/register/view_model/register_view_model.dart';
+import 'package:enxoval_baby/app/presentation/auth/utils/auth_strings.dart';
 import 'package:enxoval_baby/app/presentation/home_enxoval/utils/routes/home_enxoval_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -79,7 +81,7 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationsMixin {
                 DSInputPassword(
                   controller: _confirmPasswordController,
                   focus: _confirmPasswordFocus,
-                  label: AppStrings.confirmarSenhaObrigatorio.text,
+                  label: AuthStrings.confirmarSenhaObrigatorio.text,
                   prefixIcon: const Icon(Icons.lock),
                   validator: (String? valor) {
                     if (valor!.isEmpty) {
@@ -110,7 +112,7 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationsMixin {
                           ),
                           child: _registerViewModel.isLoading
                               ? const CircularProgressIndicator()
-                              : Text(AppStrings.cadastrar.text),
+                              : Text(AuthStrings.cadastrar.text),
                         );
                       }),
                 ),
@@ -142,7 +144,7 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationsMixin {
         SnackBar(
           content: Text(_registerViewModel.erroMensage!),
           action: SnackBarAction(
-            label: "Erro",
+            label: ErrorMessagesEnum.erro.message,
             onPressed: _submitForm,
           ),
         ),

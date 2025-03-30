@@ -1,8 +1,10 @@
 import 'package:design_system/design_system.dart';
 import 'package:enxoval_baby/app/config/injector/injection.dart';
 import 'package:enxoval_baby/app/core/utils/app_strings.dart';
+import 'package:enxoval_baby/app/core/utils/error_messages_enum.dart';
 import 'package:enxoval_baby/app/core/utils/validators/validations_mixin.dart';
 import 'package:enxoval_baby/app/presentation/auth/forgot_password/view_model/forgot_password_view_model.dart';
+import 'package:enxoval_baby/app/presentation/auth/utils/auth_strings.dart';
 import 'package:flutter/material.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
@@ -22,7 +24,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
   Widget get _sizedBoxVerticalDSSpacingBodied =>
       DSSizedBoxSpacing.sizedBoxVertical(DSSpacing.bodied.value);
 
-  void _submitForm() {
+  void _submitEmail() {
     if (_formKey.currentState!.validate()) {
       _forgotPasswordViewModel.resetPassword(
         email: _emailController.value.text,
@@ -60,14 +62,14 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
             children: [
               DSSizedBoxSpacing.sizedBoxVertical(100),
               Text(
-                AppStrings.esqueceuSuaSenha.text,
+                AuthStrings.esqueceuSuaSenha.text,
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
               ),
               _sizedBoxVerticalDSSpacingBodied,
               Text(
-                AppStrings
+                AuthStrings
                     .informeSeuEmailParaReceberAsInstrucoesDeRedefinicaoDeSenha
                     .text,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -92,7 +94,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
                       return ElevatedButton(
                         onPressed: _forgotPasswordViewModel.isLoading
                             ? null
-                            : _submitForm,
+                            : _submitEmail,
                         style: ElevatedButton.styleFrom(
                           padding: EdgeInsets.symmetric(
                               vertical: DSSpacing.xxsmall.value),
@@ -121,8 +123,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
         SnackBar(
           content: Text(_forgotPasswordViewModel.erroMensage!),
           action: SnackBarAction(
-            label: "Erro",
-            onPressed: _submitForm,
+            label: ErrorMessagesEnum.erro.message,
+            onPressed: _submitEmail,
           ),
         ),
       );

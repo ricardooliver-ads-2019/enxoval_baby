@@ -1,6 +1,7 @@
 // ignore_for_file: library_prefixes
 
 import 'package:enxoval_baby/app/core/failures/app_failure.dart' as appFailures;
+import 'package:enxoval_baby/app/core/utils/error_messages_enum.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:result_dart/result_dart.dart';
 
@@ -19,8 +20,8 @@ class FirebaseAuthDatasource {
         password: password,
       );
       if (result.user == null) {
-        return Failure(
-            appFailures.AuthException(errorMessage: 'Erro ao criar usuário.'));
+        return Failure(appFailures.AuthException(
+            errorMessage: ErrorMessagesEnum.erroAoCriarContaDoUsuario.message));
       }
       return Success(result.user!);
     } on Exception catch (e) {
@@ -40,8 +41,8 @@ class FirebaseAuthDatasource {
       if (result.user == null) {
         return Failure(
           appFailures.AuthException(
-            errorMessage: 'Usuario não encontrado',
-          ),
+              errorMessage: ErrorMessagesEnum
+                  .erroAoTentarLoginComEmalUsuarioNaoEncontrado.message),
         );
       }
 
@@ -57,8 +58,8 @@ class FirebaseAuthDatasource {
       if (result.user == null) {
         return Failure(
           appFailures.AuthException(
-            errorMessage: 'Usuario não encontrado',
-          ),
+              errorMessage: ErrorMessagesEnum
+                  .erroAoTentarLoginComContaGoogleUsuarioNaoEncontrado.message),
         );
       }
 

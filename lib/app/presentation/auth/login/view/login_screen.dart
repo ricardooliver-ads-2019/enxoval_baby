@@ -1,9 +1,12 @@
 import 'package:design_system/design_system.dart';
 import 'package:enxoval_baby/app/config/injector/injection.dart';
 import 'package:enxoval_baby/app/core/utils/app_strings.dart';
+import 'package:enxoval_baby/app/core/utils/error_messages_enum.dart';
+import 'package:enxoval_baby/app/core/utils/validation_messages_enum.dart';
 import 'package:enxoval_baby/app/core/utils/validators/validations_mixin.dart';
 import 'package:enxoval_baby/app/presentation/auth/login/view_model/login_view_model.dart';
 import 'package:enxoval_baby/app/presentation/auth/utils/auth_routes.dart';
+import 'package:enxoval_baby/app/presentation/auth/utils/auth_strings.dart';
 import 'package:enxoval_baby/app/presentation/home_enxoval/utils/routes/home_enxoval_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -39,7 +42,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationsMixin {
     super.dispose();
   }
 
-  void _submitForm() {
+  void _submitLogin() {
     if (_formKey.currentState!.validate()) {
       _loginViewModel.login(
         email: _emailController.value.text,
@@ -67,7 +70,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationsMixin {
               const Icon(Icons.person, size: 100, color: Colors.blue),
               DSSizedBoxSpacing.sizedBoxVertical(DSSpacing.large.value),
               Text(
-                AppStrings.bemVindo.text,
+                AuthStrings.bemVindo.text,
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -87,15 +90,11 @@ class _LoginScreenState extends State<LoginScreen> with ValidationsMixin {
                 focus: _passwordFocus,
                 label: AppStrings.senha.text,
                 prefixIcon: const Icon(Icons.lock),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor insira sua senha';
-                  }
-                  if (value.length < 6) {
-                    return 'Senha deve ter pelo menos 6 caracteres';
-                  }
-                  return null;
-                },
+                validator: (text) => genericValidator(
+                  text,
+                  6,
+                  ValidationMessagesEnum.senhaInvalida.text,
+                ),
               ),
               DSSizedBoxSpacing.sizedBoxVertical(DSSpacing.mini.value),
               Align(
@@ -104,7 +103,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationsMixin {
                   onPressed: () {
                     context.push(AuthRoutes.forgotPassword.path);
                   },
-                  child: Text(AppStrings.esqueceuASenha.text),
+                  child: Text(AuthStrings.esqueceuASenha.text),
                 ),
               ),
               _sizedBoxVerticalDSSpacingBodied,
@@ -115,7 +114,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationsMixin {
                     builder: (context, child) {
                       return ElevatedButton(
                         onPressed:
-                            _loginViewModel.isLoading ? null : _submitForm,
+                            _loginViewModel.isLoading ? null : _submitLogin,
                         style: ElevatedButton.styleFrom(
                           padding: EdgeInsets.symmetric(
                               vertical: DSSpacing.xxsmall.value),
@@ -134,12 +133,12 @@ class _LoginScreenState extends State<LoginScreen> with ValidationsMixin {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(AppStrings.naoTemUmaConta.text),
+                  Text(AuthStrings.naoTemUmaConta.text),
                   TextButton(
                     onPressed: () {
                       context.push(AuthRoutes.register.path);
                     },
-                    child: Text(AppStrings.criarConta.text),
+                    child: Text(AuthStrings.criarConta.text),
                   ),
                 ],
               ),
@@ -160,11 +159,8 @@ class _LoginScreenState extends State<LoginScreen> with ValidationsMixin {
         SnackBar(
           content: Text(_loginViewModel.erroMensage!),
           action: SnackBarAction(
-            label: "Erro",
-            onPressed: () => _loginViewModel.login(
-              email: _emailController.value.text,
-              password: _passwordController.value.text,
-            ),
+            label: ErrorMessagesEnum.erro.message,
+            onPressed: _submitLogin,
           ),
         ),
       );

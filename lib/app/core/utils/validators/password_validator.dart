@@ -1,4 +1,4 @@
-import 'package:enxoval_baby/app/core/utils/validators/validators/text_validator.dart';
+import 'package:enxoval_baby/app/core/utils/validators/text_validator.dart';
 
 class PasswordValidator implements TextValidator {
   @override
