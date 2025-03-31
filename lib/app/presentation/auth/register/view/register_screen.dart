@@ -6,9 +6,9 @@ import 'package:enxoval_baby/app/core/utils/validation_messages_enum.dart';
 import 'package:enxoval_baby/app/core/utils/validators/validations_mixin.dart';
 import 'package:enxoval_baby/app/presentation/auth/register/view_model/register_view_model.dart';
 import 'package:enxoval_baby/app/presentation/auth/utils/auth_strings.dart';
-import 'package:enxoval_baby/app/presentation/home_enxoval/utils/routes/home_enxoval_routes.dart';
+import 'package:enxoval_baby/app/presentation/auth/utils/widgets/action_buttom_widget.dart';
+import 'package:enxoval_baby/app/presentation/auth/utils/widgets/welcome_illustration_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -44,7 +44,7 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationsMixin {
     _passwordFocus.dispose();
     _confirmPasswordController.dispose();
     _confirmPasswordFocus.dispose();
-
+    _registerViewModel.removeListener(_onResult);
     super.dispose();
   }
 
@@ -52,15 +52,17 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationsMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(''),
+        toolbarHeight: 40,
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.all(DSSpacing.xxbodied.value),
+          padding: EdgeInsets.symmetric(horizontal: DSSpacing.xxbodied.value),
           child: Form(
             key: _formKey,
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
+                const WelcomeIllustrationWidget(),
                 DSInputTextFormField(
                   controller: _emailController,
                   focus: _emailFocus,
@@ -94,28 +96,15 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationsMixin {
                   },
                 ),
                 DSSizedBoxSpacing.sizedBoxVertical(DSSpacing.xxbodied.value),
-                SizedBox(
-                  width: double.infinity,
-                  child: ListenableBuilder(
-                      listenable: _registerViewModel,
-                      builder: (context, child) {
-                        return ElevatedButton(
-                          onPressed:
-                              _registerViewModel.isLoading ? null : _submitForm,
-                          style: ElevatedButton.styleFrom(
-                            padding: EdgeInsets.symmetric(
-                                vertical: DSSpacing.xxsmall.value),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(
-                                  DSBorderRadius.medium.value),
-                            ),
-                          ),
-                          child: _registerViewModel.isLoading
-                              ? const CircularProgressIndicator()
-                              : Text(AuthStrings.cadastrar.text),
-                        );
-                      }),
-                ),
+                ListenableBuilder(
+                    listenable: _registerViewModel,
+                    builder: (context, child) {
+                      return ActionButtonWidget(
+                        isLoading: _registerViewModel.isLoading,
+                        text: AppStrings.entrar.text,
+                        onPressed: _submitForm,
+                      );
+                    }),
                 _sizedBoxVerticalDSSpacingBodied,
               ],
             ),
@@ -135,11 +124,8 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationsMixin {
   }
 
   void _onResult() {
-    if (_registerViewModel.isSuccess) {
-      context.go(HomeEnxovalRoutes.homeEnxoval.path);
-    }
-
-    if (_registerViewModel.erroMensage != null) {
+    if (_registerViewModel.erroMensage != null &&
+        !_registerViewModel.isSuccess) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(_registerViewModel.erroMensage!),

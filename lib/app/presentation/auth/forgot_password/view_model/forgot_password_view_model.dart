@@ -15,6 +15,7 @@ class ForgotPasswordViewModel extends ChangeNotifier {
     required String email,
   }) async {
     isLoading = true;
+    _reset();
     notifyListeners();
     final result = await _authRepository.resetPassword(email: email);
 
@@ -26,5 +27,10 @@ class ForgotPasswordViewModel extends ChangeNotifier {
       erroMensage = (error as AppFailure).errorMessage;
     });
     notifyListeners();
+  }
+
+  void _reset() {
+    isSuccess = false;
+    erroMensage = null;
   }
 }

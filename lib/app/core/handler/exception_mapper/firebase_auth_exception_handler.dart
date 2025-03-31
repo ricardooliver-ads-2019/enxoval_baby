@@ -21,6 +21,13 @@ class FirebaseAuthExceptionHandler implements ExceptionMapper {
             stackTrace: stackTrace,
             errorMessage: 'Este email já está cadastrado!',
           );
+        case 'network-request-failed':
+          return AuthException(
+            exception: e,
+            stackTrace: stackTrace,
+            errorMessage:
+                'Falha de rede. Verifique sua conexão e tente novamente!',
+          );
         default:
           throw 'Erro não tratado no FirebaseAuthException';
       }

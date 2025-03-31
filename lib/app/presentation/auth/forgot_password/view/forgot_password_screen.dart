@@ -4,7 +4,9 @@ import 'package:enxoval_baby/app/core/utils/app_strings.dart';
 import 'package:enxoval_baby/app/core/utils/error_messages_enum.dart';
 import 'package:enxoval_baby/app/core/utils/validators/validations_mixin.dart';
 import 'package:enxoval_baby/app/presentation/auth/forgot_password/view_model/forgot_password_view_model.dart';
+import 'package:enxoval_baby/app/presentation/auth/forgot_password/widgets/mama_thinking_ilustration_widget.dart';
 import 'package:enxoval_baby/app/presentation/auth/utils/auth_strings.dart';
+import 'package:enxoval_baby/app/presentation/auth/utils/widgets/action_buttom_widget.dart';
 import 'package:flutter/material.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
@@ -51,74 +53,89 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(''),
+        toolbarHeight: 40,
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(DSSpacing.xxbodied.value),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              DSSizedBoxSpacing.sizedBoxVertical(100),
-              Text(
-                AuthStrings.esqueceuSuaSenha.text,
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-              ),
-              _sizedBoxVerticalDSSpacingBodied,
-              Text(
-                AuthStrings
-                    .informeSeuEmailParaReceberAsInstrucoesDeRedefinicaoDeSenha
-                    .text,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.normal,
-                    ),
-              ),
-              _sizedBoxVerticalDSSpacingBodied,
-              DSInputTextFormField(
-                controller: _emailController,
-                focus: _emailFocus,
-                label: AppStrings.email.text,
-                prefixIcon: const Icon(Icons.email),
-                textInputType: TextInputType.emailAddress,
-                validator: emailValidator,
-              ),
-              _sizedBoxVerticalDSSpacingBodied,
-              SizedBox(
-                width: double.infinity,
-                child: ListenableBuilder(
-                    listenable: _forgotPasswordViewModel,
-                    builder: (context, child) {
-                      return ElevatedButton(
-                        onPressed: _forgotPasswordViewModel.isLoading
-                            ? null
-                            : _submitEmail,
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(
-                              vertical: DSSpacing.xxsmall.value),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                                DSBorderRadius.medium.value),
+      body: ListenableBuilder(
+          listenable: _forgotPasswordViewModel,
+          builder: (context, child) {
+            return SingleChildScrollView(
+              padding:
+                  EdgeInsets.symmetric(horizontal: DSSpacing.xxbodied.value),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const MamaThinkingIlustrationWidget(),
+                    _forgotPasswordViewModel.isSuccess
+                        ? Text(
+                            AuthStrings
+                                .prontinhoOEmailParaRedefinirSuaSenhaFoiEnviado
+                                .text,
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineSmall
+                                ?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                          )
+                        : Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                AuthStrings.esqueceuSuaSenha.text,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineSmall
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                              ),
+                              DSSizedBoxSpacing.sizedBoxVertical(
+                                  DSSpacing.quarck.value),
+                              Text(
+                                AuthStrings
+                                    .informeSeuEmailParaReceberAsInstrucoesDeRedefinicaoDeSenha
+                                    .text,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.normal,
+                                    ),
+                              ),
+                            ],
                           ),
-                        ),
-                        child: _forgotPasswordViewModel.isLoading
-                            ? const CircularProgressIndicator()
-                            : Text(AppStrings.continuar.text),
-                      );
-                    }),
+                    _sizedBoxVerticalDSSpacingBodied,
+                    DSInputTextFormField(
+                      controller: _emailController,
+                      focus: _emailFocus,
+                      label: AppStrings.email.text,
+                      prefixIcon: const Icon(Icons.email),
+                      textInputType: TextInputType.emailAddress,
+                      validator: emailValidator,
+                    ),
+                    _sizedBoxVerticalDSSpacingBodied,
+                    ActionButtonWidget(
+                      isLoading: _forgotPasswordViewModel.isLoading,
+                      text: _forgotPasswordViewModel.isSuccess
+                          ? AuthStrings.reenviarEmail.text
+                          : AppStrings.continuar.text,
+                      onPressed: _submitEmail,
+                    ),
+                    _sizedBoxVerticalDSSpacingBodied,
+                  ],
+                ),
               ),
-              _sizedBoxVerticalDSSpacingBodied,
-            ],
-          ),
-        ),
-      ),
+            );
+          }),
     );
   }
 
   void _onResult() {
-    if (_forgotPasswordViewModel.erroMensage != null) {
+    if (_forgotPasswordViewModel.erroMensage != null &&
+        !_forgotPasswordViewModel.isSuccess) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(_forgotPasswordViewModel.erroMensage!),

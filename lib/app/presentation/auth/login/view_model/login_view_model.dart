@@ -16,6 +16,7 @@ class LoginViewModel extends ChangeNotifier {
     required String password,
   }) async {
     isLoading = true;
+    _reset();
     notifyListeners();
     final result =
         await _authRepository.login(email: email, password: password);
@@ -28,5 +29,10 @@ class LoginViewModel extends ChangeNotifier {
       erroMensage = (error as AppFailure).errorMessage;
     });
     notifyListeners();
+  }
+
+  void _reset() {
+    isSuccess = false;
+    erroMensage = null;
   }
 }

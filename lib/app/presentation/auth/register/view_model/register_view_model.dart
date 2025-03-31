@@ -16,6 +16,7 @@ class RegisterViewModel extends ChangeNotifier {
     required String password,
   }) async {
     isLoading = true;
+    _reset();
     notifyListeners();
     final result =
         await _authRepository.register(email: email, password: password);
@@ -28,5 +29,10 @@ class RegisterViewModel extends ChangeNotifier {
       erroMensage = (error as AppFailure).errorMessage;
     });
     notifyListeners();
+  }
+
+  void _reset() {
+    isSuccess = false;
+    erroMensage = null;
   }
 }
