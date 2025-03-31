@@ -1,4 +1,4 @@
-import 'package:enxoval_baby/app/core/utils/validators/validators/text_validator.dart';
+import 'package:enxoval_baby/app/core/utils/validators/text_validator.dart';
 
 class NameValidator implements TextValidator {
   final _minLengthValidator = 3;

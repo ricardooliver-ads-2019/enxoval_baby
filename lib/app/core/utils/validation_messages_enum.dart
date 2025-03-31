@@ -9,6 +9,7 @@ enum ValidationMessagesEnum {
   senhasNaoEstaoIguais('Senhas não estão iguais'),
   aSenhaDeveTerNoMinimo6Caracteres('A senha deve ter no mínimo 6 caracteres.'),
   aSenhaDeveConterNumero('A senha deve conter número.'),
+  senhaInvalida('Senha inválida.'),
   aSenhaDeveConterPeloMenosUmaLentraMinuscula(
       'A senha deve conter pelo menos uma letra minúscula.'),
   aSenhaDeveConterPeloMenosUmCaracterEspecial(
@@ -17,7 +18,6 @@ enum ValidationMessagesEnum {
       'A senha deve conter pelo menos uma letra maiúscula.'),
   aSenhaDeveTerPeloMenos(
       'A senha deve ter: No mínimo 6 caracteres.\nPelo menos dois ou mais números.\nletras minúsculas e maiúsculas.'),
-  senhaCaracteres('8 a 16 caracteres'),
   ;
 
   final String text;

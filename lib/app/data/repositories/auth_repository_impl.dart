@@ -1,4 +1,5 @@
 import 'package:enxoval_baby/app/core/handler/exception_handler.dart';
+import 'package:enxoval_baby/app/core/utils/error_messages_enum.dart';
 import 'package:enxoval_baby/app/data/datasources/remote/firebase_auth_datasource.dart';
 import 'package:enxoval_baby/app/data/models/user_model.dart';
 import 'package:enxoval_baby/app/domain/entities/user_entity.dart';
@@ -45,7 +46,7 @@ class AuthRepositoryImpl implements AuthRepository {
       return Failure(_handler.handle(e, stack));
     } catch (e) {
       _isAuthNotifier.value = false;
-      throw '';
+      throw ErrorMessagesEnum.erroDesconhecidoAoTentarFazerRegister;
     }
   }
 
@@ -65,7 +66,7 @@ class AuthRepositoryImpl implements AuthRepository {
     } catch (e) {
       _isAuthNotifier.value = false;
 
-      throw '';
+      throw ErrorMessagesEnum.erroDesconhecidoAoTentarFazerLogin.message;
     }
   }
 
@@ -76,7 +77,7 @@ class AuthRepositoryImpl implements AuthRepository {
     } on Exception catch (e, stack) {
       return Failure(_handler.handle(e, stack));
     } catch (e) {
-      throw '';
+      throw ErrorMessagesEnum.erroDesconhecidoAoTentarFazerResetPassword;
     }
   }
 
@@ -89,7 +90,7 @@ class AuthRepositoryImpl implements AuthRepository {
       return Failure(_handler.handle(e, stack));
     } catch (e) {
       _isAuthNotifier.value = false;
-      throw '';
+      throw ErrorMessagesEnum.erroDesconhecidoAoTentarFazerLogout;
     }
   }
 }

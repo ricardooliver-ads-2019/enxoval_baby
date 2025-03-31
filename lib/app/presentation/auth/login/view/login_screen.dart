@@ -1,10 +1,14 @@
 import 'package:design_system/design_system.dart';
 import 'package:enxoval_baby/app/config/injector/injection.dart';
 import 'package:enxoval_baby/app/core/utils/app_strings.dart';
+import 'package:enxoval_baby/app/core/utils/error_messages_enum.dart';
+import 'package:enxoval_baby/app/core/utils/validation_messages_enum.dart';
 import 'package:enxoval_baby/app/core/utils/validators/validations_mixin.dart';
 import 'package:enxoval_baby/app/presentation/auth/login/view_model/login_view_model.dart';
 import 'package:enxoval_baby/app/presentation/auth/utils/auth_routes.dart';
-import 'package:enxoval_baby/app/presentation/home_enxoval/utils/routes/home_enxoval_routes.dart';
+import 'package:enxoval_baby/app/presentation/auth/utils/auth_strings.dart';
+import 'package:enxoval_baby/app/presentation/auth/utils/widgets/action_buttom_widget.dart';
+import 'package:enxoval_baby/app/presentation/auth/utils/widgets/welcome_illustration_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -39,7 +43,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationsMixin {
     super.dispose();
   }
 
-  void _submitForm() {
+  void _submitLogin() {
     if (_formKey.currentState!.validate()) {
       _loginViewModel.login(
         email: _emailController.value.text,
@@ -48,31 +52,24 @@ class _LoginScreenState extends State<LoginScreen> with ValidationsMixin {
     }
   }
 
-  void navigationTo() {
-    context.go(HomeEnxovalRoutes.homeEnxoval.path);
-  }
-
   Widget get _sizedBoxVerticalDSSpacingBodied =>
       DSSizedBoxSpacing.sizedBoxVertical(DSSpacing.bodied.value);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(DSSpacing.xxbodied.value),
+        padding: EdgeInsets.only(
+          top: DSSpacing.xxxlarge.value,
+          right: DSSpacing.xxbodied.value,
+          left: DSSpacing.xxbodied.value,
+        ),
         child: Form(
           key: _formKey,
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              DSSizedBoxSpacing.sizedBoxVertical(DSSpacing.xlarge.value),
-              const Icon(Icons.person, size: 100, color: Colors.blue),
-              DSSizedBoxSpacing.sizedBoxVertical(DSSpacing.large.value),
-              Text(
-                AppStrings.bemVindo.text,
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-              ),
-              _sizedBoxVerticalDSSpacingBodied,
+              const WelcomeIllustrationWidget(),
+              DSSizedBoxSpacing.sizedBoxVertical(DSSpacing.mini.value),
               DSInputTextFormField(
                 controller: _emailController,
                 focus: _emailFocus,
@@ -87,59 +84,42 @@ class _LoginScreenState extends State<LoginScreen> with ValidationsMixin {
                 focus: _passwordFocus,
                 label: AppStrings.senha.text,
                 prefixIcon: const Icon(Icons.lock),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor insira sua senha';
-                  }
-                  if (value.length < 6) {
-                    return 'Senha deve ter pelo menos 6 caracteres';
-                  }
-                  return null;
-                },
+                validator: (text) => genericValidator(
+                  text,
+                  6,
+                  ValidationMessagesEnum.senhaInvalida.text,
+                ),
               ),
-              DSSizedBoxSpacing.sizedBoxVertical(DSSpacing.mini.value),
+              DSSizedBoxSpacing.sizedBoxVertical(DSSpacing.quarck.value),
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: () {
                     context.push(AuthRoutes.forgotPassword.path);
                   },
-                  child: Text(AppStrings.esqueceuASenha.text),
+                  child: Text(AuthStrings.esqueceuASenha.text),
                 ),
               ),
-              _sizedBoxVerticalDSSpacingBodied,
-              SizedBox(
-                width: double.infinity,
-                child: ListenableBuilder(
-                    listenable: _loginViewModel,
-                    builder: (context, child) {
-                      return ElevatedButton(
-                        onPressed:
-                            _loginViewModel.isLoading ? null : _submitForm,
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(
-                              vertical: DSSpacing.xxsmall.value),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                                DSBorderRadius.medium.value),
-                          ),
-                        ),
-                        child: _loginViewModel.isLoading
-                            ? const CircularProgressIndicator()
-                            : Text(AppStrings.entrar.text),
-                      );
-                    }),
-              ),
+              DSSizedBoxSpacing.sizedBoxVertical(DSSpacing.mini.value),
+              ListenableBuilder(
+                  listenable: _loginViewModel,
+                  builder: (context, child) {
+                    return ActionButtonWidget(
+                      isLoading: _loginViewModel.isLoading,
+                      text: AppStrings.entrar.text,
+                      onPressed: _submitLogin,
+                    );
+                  }),
               _sizedBoxVerticalDSSpacingBodied,
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(AppStrings.naoTemUmaConta.text),
+                  Text(AuthStrings.naoTemUmaConta.text),
                   TextButton(
                     onPressed: () {
                       context.push(AuthRoutes.register.path);
                     },
-                    child: Text(AppStrings.criarConta.text),
+                    child: Text(AuthStrings.criarConta.text),
                   ),
                 ],
               ),
@@ -151,20 +131,13 @@ class _LoginScreenState extends State<LoginScreen> with ValidationsMixin {
   }
 
   void _onResult() {
-    if (_loginViewModel.isSuccess) {
-      navigationTo();
-    }
-
-    if (_loginViewModel.erroMensage != null) {
+    if (_loginViewModel.erroMensage != null && !_loginViewModel.isSuccess) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(_loginViewModel.erroMensage!),
           action: SnackBarAction(
-            label: "Erro",
-            onPressed: () => _loginViewModel.login(
-              email: _emailController.value.text,
-              password: _passwordController.value.text,
-            ),
+            label: ErrorMessagesEnum.erro.message,
+            onPressed: _submitLogin,
           ),
         ),
       );

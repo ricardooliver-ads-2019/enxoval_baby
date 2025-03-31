@@ -1,5 +1,7 @@
 enum ImagePaths {
   pregnant('pregnant.png'),
+  mommyWondering('mommy_wondering.png'),
+  mamaThinking('mama_thinking.png'),
   thought('thought.png'),
   googleLogo('google_logo.png');
 
