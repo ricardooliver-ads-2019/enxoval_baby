@@ -30,7 +30,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationsMixin {
   @override
   void initState() {
     super.initState();
-    _loginViewModel.addListener(_onResult);
+    _loginViewModel.login.addListener(_onResult);
   }
 
   @override
@@ -45,10 +45,10 @@ class _LoginScreenState extends State<LoginScreen> with ValidationsMixin {
 
   void _submitLogin() {
     if (_formKey.currentState!.validate()) {
-      _loginViewModel.login(
-        email: _emailController.value.text,
-        password: _passwordController.value.text,
-      );
+      _loginViewModel.login.execute((
+        _emailController.value.text,
+        _passwordController.value.text,
+      ));
     }
   }
 
@@ -102,10 +102,10 @@ class _LoginScreenState extends State<LoginScreen> with ValidationsMixin {
               ),
               DSSizedBoxSpacing.sizedBoxVertical(DSSpacing.mini.value),
               ListenableBuilder(
-                  listenable: _loginViewModel,
+                  listenable: _loginViewModel.login,
                   builder: (context, child) {
                     return ActionButtonWidget(
-                      isLoading: _loginViewModel.isLoading,
+                      isLoading: _loginViewModel.login.running,
                       text: AppStrings.entrar.text,
                       onPressed: _submitLogin,
                     );
@@ -131,7 +131,10 @@ class _LoginScreenState extends State<LoginScreen> with ValidationsMixin {
   }
 
   void _onResult() {
-    if (_loginViewModel.erroMensage != null && !_loginViewModel.isSuccess) {
+    if (_loginViewModel.login.completed) {
+      _loginViewModel.login.clearResult();
+    }
+    if (_loginViewModel.erroMensage != null && _loginViewModel.login.error) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(_loginViewModel.erroMensage!),

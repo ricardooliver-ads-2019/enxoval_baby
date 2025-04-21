@@ -2,6 +2,7 @@ import 'package:enxoval_baby/app/core/failures/app_failure.dart';
 import 'package:enxoval_baby/app/core/handler/exception_handler.dart';
 import 'package:enxoval_baby/app/data/datasources/remote/firebase_auth_datasource.dart';
 import 'package:enxoval_baby/app/data/repositories/auth_repository_impl.dart';
+import 'package:enxoval_baby/app/domain/dtos/user_credential_dto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -66,10 +67,10 @@ void main() {
           .thenReturn(exception); // Simula tratamento de erro
 
       // Act
-      final result = await authRepository.login(
+      final result = await authRepository.login(const UserCredentialDto(
         email: 'invalid@example.com',
         password: 'wrongpass',
-      );
+      ));
 
       // Assert
       expect(result.isError(), isTrue);
@@ -94,7 +95,8 @@ void main() {
         errorMessage: 'Email ou Senha incorretos!',
       ));
 
-      final result = await authRepository.login(email: '', password: '');
+      final result = await authRepository
+          .login(const UserCredentialDto(email: '', password: ''));
       //Assert
 
       expect(result.isError(), isTrue);
@@ -107,8 +109,8 @@ void main() {
             password: any(named: 'password'),
           )).thenAnswer((_) async => Success(mockUser));
 
-      final result =
-          await authRepository.login(email: 'email', password: 'password');
+      final result = await authRepository
+          .login(const UserCredentialDto(email: 'email', password: 'password'));
       //Assert
 
       expect(result.isSuccess(), isTrue);

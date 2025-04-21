@@ -28,8 +28,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
 
   void _submitEmail() {
     if (_formKey.currentState!.validate()) {
-      _forgotPasswordViewModel.resetPassword(
-        email: _emailController.value.text,
+      _forgotPasswordViewModel.resetPassword.execute(
+        _emailController.value.text,
       );
     }
   }
@@ -37,7 +37,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
   @override
   void initState() {
     super.initState();
-    _forgotPasswordViewModel.addListener(_onResult);
+    _forgotPasswordViewModel.resetPassword.addListener(_onResult);
   }
 
   @override
@@ -68,7 +68,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const MamaThinkingIlustrationWidget(),
-                    _forgotPasswordViewModel.isSuccess
+                    _forgotPasswordViewModel.resetPassword.completed
                         ? Text(
                             AuthStrings
                                 .prontinhoOEmailParaRedefinirSuaSenhaFoiEnviado
@@ -118,8 +118,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
                     ),
                     _sizedBoxVerticalDSSpacingBodied,
                     ActionButtonWidget(
-                      isLoading: _forgotPasswordViewModel.isLoading,
-                      text: _forgotPasswordViewModel.isSuccess
+                      isLoading: _forgotPasswordViewModel.resetPassword.running,
+                      text: _forgotPasswordViewModel.resetPassword.completed
                           ? AuthStrings.reenviarEmail.text
                           : AppStrings.continuar.text,
                       onPressed: _submitEmail,
@@ -135,7 +135,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
 
   void _onResult() {
     if (_forgotPasswordViewModel.erroMensage != null &&
-        !_forgotPasswordViewModel.isSuccess) {
+        _forgotPasswordViewModel.resetPassword.error) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(_forgotPasswordViewModel.erroMensage!),
