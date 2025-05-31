@@ -50,5 +50,33 @@ jobs:
       - name: Rodar testes
         run: flutter test
 
-      - name: Gerar APK de debug
-        run: flutter build apk --debug
+      # --- [OPCIONAL] Geração e artefato do APK de debug (descomente se quiser gerar para testes internos) ---
+      # - name: Gerar APK de debug
+      #   run: flutter build apk --debug
+
+      # - name: Salvar APK de debug como artefato
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: debug-apk
+      #     path: build/app/outputs/flutter-apk/app-debug.apk
+      # --- Fim da seção do debug ---
+
+      # --- Geração e artefato de release (.apk e .aab) ---
+      - name: Gerar APK de release
+        run: flutter build apk --release
+
+      - name: Salvar APK de release como artefato
+        uses: actions/upload-artifact@v3
+        with:
+          name: release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+      - name: Gerar AAB (Android App Bundle)
+        run: flutter build appbundle --release
+
+      - name: Salvar AAB como artefato
+        uses: actions/upload-artifact@v3
+        with:
+          name: release-aab
+          path: build/app/outputs/bundle/release/app-release.aab
+      # --- Fim dos builds de release ---
