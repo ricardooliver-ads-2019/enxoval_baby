@@ -50,16 +50,24 @@ jobs:
       - name: Rodar testes
         run: flutter test
 
-      # --- [OPCIONAL] Geração e artefato do APK de debug (descomente se quiser gerar para testes internos) ---
+      # --- Definir variáveis de build (data, hash, commit) ---
+      - name: Definir variáveis de build
+        id: vars
+        run: |
+          echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+          echo "short_sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+          echo "commit_msg=$(git log -1 --pretty=%s | tr -dc '[:alnum:]-' | cut -c1-30)" >> $GITHUB_OUTPUT
+
+      # --- [OPCIONAL] APK de debug ---
       # - name: Gerar APK de debug
       #   run: flutter build apk --debug
 
       # - name: Salvar APK de debug como artefato
       #   uses: actions/upload-artifact@v4
       #   with:
-      #     name: debug-apk
+      #     name: debug-apk-${{ steps.vars.outputs.date }}-${{ steps.vars.outputs.short_sha }}-${{ steps.vars.outputs.commit_msg }}
       #     path: build/app/outputs/flutter-apk/app-debug.apk
-      # --- Fim da seção do debug ---
+      # --- Fim da seção de debug ---
 
       # --- Geração e artefato de release (.apk e .aab) ---
       - name: Gerar APK de release
@@ -68,7 +76,7 @@ jobs:
       - name: Salvar APK de release como artefato
         uses: actions/upload-artifact@v4
         with:
-          name: release-apk
+          name: release-apk-${{ steps.vars.outputs.date }}-${{ steps.vars.outputs.short_sha }}-${{ steps.vars.outputs.commit_msg }}
           path: build/app/outputs/flutter-apk/app-release.apk
 
       - name: Gerar AAB (Android App Bundle)
@@ -77,6 +85,6 @@ jobs:
       - name: Salvar AAB como artefato
         uses: actions/upload-artifact@v4
         with:
-          name: release-aab
+          name: release-aab-${{ steps.vars.outputs.date }}-${{ steps.vars.outputs.short_sha }}-${{ steps.vars.outputs.commit_msg }}
           path: build/app/outputs/bundle/release/app-release.aab
       # --- Fim dos builds de release ---
