@@ -21,6 +21,27 @@ jobs:
         with:
           flutter-version: '3.29.3'
 
+      # --- Gerar firebase_options.dart dinamicamente ---
+      - name: Instalar Firebase CLI
+        run: npm install -g firebase-tools
+
+      - name: Instalar FlutterFire CLI
+        run: |
+          dart pub global activate flutterfire_cli
+          echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
+
+      - name: Configurar Firebase
+        env:
+          FIREBASE_SERVICE_ACCOUNT_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}
+          PROJECT_ID: enxovalbaby-d4846
+        run: |
+          set -e
+          echo "$FIREBASE_SERVICE_ACCOUNT_KEY" > /tmp/key.json
+          export GOOGLE_APPLICATION_CREDENTIALS="/tmp/key.json"
+          flutterfire configure --project=$PROJECT_ID --yes
+          rm /tmp/key.json || true
+      # --- Fim da configuração do Firebase ---
+
       - name: Rodar flutter pub get
         run: flutter pub get
 
