@@ -35,10 +35,12 @@ jobs:
           FIREBASE_SERVICE_ACCOUNT_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}
           PROJECT_ID: enxovalbaby-d4846
         run: |
-          set -e
           echo "$FIREBASE_SERVICE_ACCOUNT_KEY" > /tmp/key.json
           export GOOGLE_APPLICATION_CREDENTIALS="/tmp/key.json"
-          flutterfire configure --project=$PROJECT_ID --yes
+          flutterfire configure \
+            --project=$PROJECT_ID \
+            --platforms=android,ios,web \
+            --yes
           rm /tmp/key.json || true
       # --- Fim da configuração do Firebase ---
 
