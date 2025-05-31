@@ -55,7 +55,7 @@ jobs:
       #   run: flutter build apk --debug
 
       # - name: Salvar APK de debug como artefato
-      #   uses: actions/upload-artifact@v3
+      #   uses: actions/upload-artifact@v4
       #   with:
       #     name: debug-apk
       #     path: build/app/outputs/flutter-apk/app-debug.apk
@@ -66,7 +66,7 @@ jobs:
         run: flutter build apk --release
 
       - name: Salvar APK de release como artefato
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: release-apk
           path: build/app/outputs/flutter-apk/app-release.apk
@@ -75,7 +75,7 @@ jobs:
         run: flutter build appbundle --release
 
       - name: Salvar AAB como artefato
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: release-aab
           path: build/app/outputs/bundle/release/app-release.aab
