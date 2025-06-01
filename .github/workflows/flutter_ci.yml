@@ -49,6 +49,17 @@ jobs:
 
       - name: Rodar testes
         run: flutter test
+        
+      # --- Preparar keystore e key.properties ---
+      - name: Restaurar chave de assinatura
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/enxovalbaby-release-key.jks
+          cat > android/key.properties <<EOF
+          storePassword=${{ secrets.KEYSTORE_PASSWORD }}
+          keyPassword=${{ secrets.KEY_PASSWORD }}
+          keyAlias=${{ secrets.KEY_ALIAS }}
+          storeFile=enxovalbaby-release-key.jks
+          EOF
 
       # --- Definir variáveis de build (data, hash, commit) ---
       - name: Definir variáveis de build
@@ -88,3 +99,13 @@ jobs:
           name: release-aab-${{ steps.vars.outputs.date }}-${{ steps.vars.outputs.short_sha }}-${{ steps.vars.outputs.commit_msg }}
           path: build/app/outputs/bundle/release/app-release.aab
       # --- Fim dos builds de release ---
+
+      # --- Verificar assinatura do APK ---
+      - name: Instalar build-tools (apksigner)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y zipalign apksigner
+
+      - name: Verificar assinatura do APK
+        run: |
+          apksigner verify --verbose --print-certs build/app/outputs/flutter-apk/app-release.apk
