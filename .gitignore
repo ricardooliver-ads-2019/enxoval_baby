@@ -44,6 +44,7 @@ ios/firebase_app_id_file.json
 # ======================
 # 🧪 SYMBOL/OBFUSCATION FILES
 # ======================
+.codegpt
 app.*.symbols
 app.*.map.json
 
