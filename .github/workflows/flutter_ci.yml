@@ -69,6 +69,13 @@ jobs:
           echo "short_sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
           echo "commit_msg=$(git log -1 --pretty=%s | tr -dc '[:alnum:]-' | cut -c1-30)" >> $GITHUB_OUTPUT
 
+      
+      - name: ✅ Verificar se minifyEnabled está ativado
+        run: |
+          grep -q "minifyEnabled true" android/app/build.gradle || {
+            echo "❌ minifyEnabled não está ativado no build.gradle (modo release)";
+            exit 1;
+          }
       # --- [OPCIONAL] APK de debug ---
       # - name: Gerar APK de debug
       #   run: flutter build apk --debug
@@ -80,7 +87,7 @@ jobs:
       #     path: build/app/outputs/flutter-apk/app-debug.apk
       # --- Fim da seção de debug ---
 
-      # --- Geração e artefato de release (.apk e .aab) ---
+      # --- Geração e artefato de release (.apk e .aab) ---     
       - name: Gerar APK de release
         run: flutter build apk --release
 

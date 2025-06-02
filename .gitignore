@@ -4,6 +4,7 @@
 /android/app/enxovalbaby-release-key.jks
 /android/key.properties
 .enxovalbaby-release-key.jks.base64.txt
+enxovalbaby-release-key.jks.base64.txt
 firebase.json
 firebase-debug.log
 .firebase/
