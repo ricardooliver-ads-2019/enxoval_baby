@@ -23,24 +23,28 @@ class AppRouter {
 }
 
 Future<String?> _redirect(BuildContext context, GoRouterState state) async {
-  final isAuthenticated = Injection.inject<AuthRepository>().isAuth.value;
-  final isLoginRoute = state.matchedLocation == AuthRoutes.login.path;
-  final isRegisterRoute = state.matchedLocation == AuthRoutes.register.path;
+  final authRepo = Injection.inject<AuthRepository>();
+  final isAuthenticated = authRepo.isAuth.value;
+  final currentPath = state.matchedLocation;
 
-  final isForgotPasswordRoute =
-      state.matchedLocation == AuthRoutes.forgotPassword.path;
+  final isSplash = currentPath == SplashRoutes.splash.path;
+  final isPublicRoute = _isPublicRoute(currentPath);
 
-  if (state.matchedLocation != SplashRoutes.splash.path) {
-    if (!isAuthenticated) {
-      if (!isLoginRoute && !isRegisterRoute && !isForgotPasswordRoute) {
-        return AuthRoutes.login.path;
-      }
-    } else {
-      if (isLoginRoute || isRegisterRoute) {
-        return HomeEnxovalRoutes.homeEnxoval.path;
-      }
-    }
+  if (isSplash) return null;
+
+  if (!isAuthenticated && !isPublicRoute) {
+    return AuthRoutes.login.path;
+  }
+
+  if (isAuthenticated && isPublicRoute) {
+    return HomeEnxovalRoutes.homeEnxoval.path;
   }
 
   return null;
+}
+
+bool _isPublicRoute(String path) {
+  return path == AuthRoutes.login.path ||
+      path == AuthRoutes.register.path ||
+      path == AuthRoutes.forgotPassword.path;
 }
