@@ -31,4 +31,4 @@ jobs:
             Esta PR foi criada automaticamente após o push da branch `${{ github.ref_name }}`.
             > Essa automação ajuda a manter o fluxo de integração contínua organizado.
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
