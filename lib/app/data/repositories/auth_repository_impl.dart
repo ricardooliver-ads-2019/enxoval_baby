@@ -2,6 +2,7 @@ import 'package:enxoval_baby/app/core/handler/exception_handler.dart';
 import 'package:enxoval_baby/app/core/utils/error_messages_enum.dart';
 import 'package:enxoval_baby/app/data/datasources/remote/firebase_auth_datasource.dart';
 import 'package:enxoval_baby/app/data/models/user_model.dart';
+import 'package:enxoval_baby/app/domain/dtos/user_credential_dto.dart';
 import 'package:enxoval_baby/app/domain/entities/user_entity.dart';
 import 'package:enxoval_baby/app/domain/repositories/auth_repository.dart';
 import 'package:flutter/material.dart';
@@ -32,13 +33,12 @@ class AuthRepositoryImpl implements AuthRepository {
       });
 
   @override
-  AsyncResult<UserEntity> register({
-    required String email,
-    required String password,
-  }) async {
+  AsyncResult<UserEntity> register(
+    UserCredentialDto userCredential,
+  ) async {
     try {
-      final result =
-          await _authDataSource.register(email: email, password: password);
+      final result = await _authDataSource.register(
+          email: userCredential.email, password: userCredential.password);
       final user = UserModel.fromFirebase(result.getOrThrow());
       return Success(user);
     } on Exception catch (e, stack) {
@@ -51,13 +51,12 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  AsyncResult<UserEntity> login({
-    required String email,
-    required String password,
-  }) async {
+  AsyncResult<UserEntity> login(
+    UserCredentialDto userCredential,
+  ) async {
     try {
-      final result =
-          await _authDataSource.login(email: email, password: password);
+      final result = await _authDataSource.login(
+          email: userCredential.email, password: userCredential.password);
       final user = UserModel.fromFirebase(result.getOrThrow());
       return Success(user);
     } on Exception catch (e, stack) {

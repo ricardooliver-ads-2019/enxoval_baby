@@ -33,7 +33,7 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationsMixin {
   @override
   void initState() {
     super.initState();
-    _registerViewModel.addListener(_onResult);
+    _registerViewModel.register.addListener(_onResult);
   }
 
   @override
@@ -97,10 +97,10 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationsMixin {
                 ),
                 DSSizedBoxSpacing.sizedBoxVertical(DSSpacing.xxbodied.value),
                 ListenableBuilder(
-                    listenable: _registerViewModel,
+                    listenable: _registerViewModel.register,
                     builder: (context, child) {
                       return ActionButtonWidget(
-                        isLoading: _registerViewModel.isLoading,
+                        isLoading: _registerViewModel.register.running,
                         text: AppStrings.entrar.text,
                         onPressed: _submitForm,
                       );
@@ -116,16 +116,19 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationsMixin {
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
-      _registerViewModel.register(
-        email: _emailController.value.text,
-        password: _passwordController.value.text,
-      );
+      _registerViewModel.register.execute((
+        _emailController.value.text,
+        _passwordController.value.text,
+      ));
     }
   }
 
   void _onResult() {
+    if (_registerViewModel.register.completed) {
+      _registerViewModel.register.clearResult();
+    }
     if (_registerViewModel.erroMensage != null &&
-        !_registerViewModel.isSuccess) {
+        _registerViewModel.register.error) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(_registerViewModel.erroMensage!),

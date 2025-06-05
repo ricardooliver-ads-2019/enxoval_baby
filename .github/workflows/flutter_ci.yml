@@ -1,0 +1,105 @@
+name: Flutter CI
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+    branches:
+      - main
+      - dev
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v3
+
+      - name: Instalar Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.29.3'
+
+      - name: Instalar Firebase CLI
+        run: npm install -g firebase-tools
+
+      - name: Instalar FlutterFire CLI
+        run: |
+          dart pub global activate flutterfire_cli
+          echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
+
+      - name: Configurar Firebase
+        env:
+          FIREBASE_SERVICE_ACCOUNT_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}
+          PROJECT_ID: enxovalbaby-d4846
+        run: |
+          echo "$FIREBASE_SERVICE_ACCOUNT_KEY" > /tmp/key.json
+          export GOOGLE_APPLICATION_CREDENTIALS="/tmp/key.json"
+          flutterfire configure \
+            --project=$PROJECT_ID \
+            --platforms=android,ios,web \
+            --yes
+          rm /tmp/key.json || true
+
+      - name: Rodar flutter pub get
+        run: flutter pub get
+
+      - name: Rodar testes
+        run: flutter test
+
+      - name: Restaurar chave de assinatura
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/enxovalbaby-release-key.jks
+          cat > android/key.properties <<EOF
+          storePassword=${{ secrets.KEYSTORE_PASSWORD }}
+          keyPassword=${{ secrets.KEY_PASSWORD }}
+          keyAlias=${{ secrets.KEY_ALIAS }}
+          storeFile=enxovalbaby-release-key.jks
+          EOF
+
+      - name: Definir variáveis de build
+        id: vars
+        run: |
+          echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+          echo "short_sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+          echo "commit_msg=$(git log -1 --pretty=%s | tr -dc '[:alnum:]-' | cut -c1-30)" >> $GITHUB_OUTPUT
+
+      - name: ✅ Verificar se minifyEnabled está ativado
+        run: |
+          grep -q "minifyEnabled true" android/app/build.gradle || {
+            echo "❌ minifyEnabled não está ativado no build.gradle (modo release)";
+            exit 1;
+          }
+
+      # --- Geração e artefato de release ---
+      - name: Gerar APK de release
+        run: flutter build apk --release
+
+      - name: Salvar APK de release como artefato
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-apk-${{ steps.vars.outputs.date }}-${{ steps.vars.outputs.short_sha }}-${{ steps.vars.outputs.commit_msg }}
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+      - name: Gerar AAB (somente na main)
+        if: github.ref == 'refs/heads/main'
+        run: flutter build appbundle --release
+
+      - name: Salvar AAB como artefato (somente na main)
+        if: github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-aab-${{ steps.vars.outputs.date }}-${{ steps.vars.outputs.short_sha }}-${{ steps.vars.outputs.commit_msg }}
+          path: build/app/outputs/bundle/release/app-release.aab
+
+      - name: Instalar build-tools (apksigner)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y zipalign apksigner
+
+      - name: Verificar assinatura do APK
+        run: |
+          apksigner verify --verbose --print-certs build/app/outputs/flutter-apk/app-release.apk

@@ -1,38 +1,34 @@
+import 'package:enxoval_baby/app/core/commands/command.dart';
 import 'package:enxoval_baby/app/core/failures/app_failure.dart';
+import 'package:enxoval_baby/app/domain/dtos/user_credential_dto.dart';
 import 'package:enxoval_baby/app/domain/repositories/auth_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:result_dart/result_dart.dart';
 
 class LoginViewModel extends ChangeNotifier {
   final AuthRepository _authRepository;
 
   LoginViewModel({required AuthRepository authRepository})
-      : _authRepository = authRepository;
-  bool isLoading = false;
-  bool isSuccess = false;
-  String? erroMensage;
-
-  Future<void> login({
-    required String email,
-    required String password,
-  }) async {
-    isLoading = true;
-    _reset();
-    notifyListeners();
-    final result =
-        await _authRepository.login(email: email, password: password);
-
-    result.fold((success) {
-      isLoading = false;
-      isSuccess = true;
-    }, (error) {
-      isLoading = false;
-      erroMensage = (error as AppFailure).errorMessage;
-    });
-    notifyListeners();
+      : _authRepository = authRepository {
+    login = Command1(_login);
   }
 
-  void _reset() {
-    isSuccess = false;
-    erroMensage = null;
+  late Command1<Unit, (String email, String password)> login;
+
+  String? erroMensage;
+
+  Future<Result<Unit>> _login((String, String) credentials) async {
+    final (email, password) = credentials;
+    final result = await _authRepository.login(UserCredentialDto(
+      email: email,
+      password: password,
+    ));
+
+    result.fold((success) {}, (error) {
+      erroMensage = (error as AppFailure).errorMessage;
+    });
+
+    notifyListeners();
+    return result.map((_) => unit);
   }
 }

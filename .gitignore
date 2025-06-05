@@ -1,4 +1,35 @@
-# Miscellaneous
+# ======================
+# 🔐 SENSITIVE FILES
+# ======================
+/android/app/enxovalbaby-release-key.jks
+/android/key.properties
+.enxovalbaby-release-key.jks.base64.txt
+enxovalbaby-release-key.jks.base64.txt
+firebase.json
+firebase-debug.log
+.firebase/
+lib/firebase_options.dart
+android/app/google-services.json
+ios/Runner/GoogleServices-Info.plist
+ios/firebase_app_id_file.json
+
+# ======================
+# 🏗️ BUILD FILES
+# ======================
+/build/
+.dart_tool/
+.pub/
+.pub-cache/
+**/doc/api/
+**/ios/Flutter/.last_build_id
+
+# ======================
+# 🧠 IDE SETTINGS
+# ======================
+.idea/
+*.iml
+*.ipr
+*.iws
 *.class
 *.log
 *.pyc
@@ -8,48 +39,18 @@
 .buildlog/
 .history
 .svn/
-migrate_working_dir/
+.codegpt
 
-# IntelliJ related
-*.iml
-*.ipr
-*.iws
-.idea/
-
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
-#.vscode/
-
-# Flutter/Dart/Pub related
-**/doc/api/
-**/ios/Flutter/.last_build_id
-.dart_tool/
-.flutter-plugins
-.flutter-plugins-dependencies
-.pub-cache/
-.pub/
-/build/
-
-# Symbolication related
+# ======================
+# 🧪 SYMBOL/OBFUSCATION FILES
+# ======================
+.codegpt
 app.*.symbols
-
-# Obfuscation related
 app.*.map.json
 
-# Android Studio will place build artifacts here
+# ======================
+# ⚠️ ANDROID STUDIO TEMP FILES
+# ======================
 /android/app/debug
 /android/app/profile
 /android/app/release
-android/app/src/main/AndroidManifest.xml
-
-.codegpt
-# firebase
-android/app/google-services.json
-ios/firebase_app_id_file.json
-ios/Runner/GoogleServices-Info.plist
-lib/firebase_options.dart
-.firebase/
-firebase.json
-firebase-debug.log
-ios/Runner/Info.plist

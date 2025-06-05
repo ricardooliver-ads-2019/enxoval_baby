@@ -16,17 +16,17 @@ class _LogoutButtonState extends State<LogoutButton> {
   @override
   void initState() {
     super.initState();
-    logoutViewModel.addListener(_onResult);
+    logoutViewModel.logout.addListener(_onResult);
   }
 
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
-        listenable: logoutViewModel,
+        listenable: logoutViewModel.logout,
         builder: (context, child) {
           return InkResponse(
             borderRadius: BorderRadius.circular(8.0),
-            onTap: !logoutViewModel.isLoading ? logoutViewModel.logout : () {},
+            onTap: logoutViewModel.logout.execute,
             child: const Center(
               child: Icon(
                 Icons.logout,
@@ -38,13 +38,16 @@ class _LogoutButtonState extends State<LogoutButton> {
   }
 
   void _onResult() {
-    if (logoutViewModel.erroMensage != null) {
+    if (logoutViewModel.logout.completed) {
+      logoutViewModel.logout.clearResult();
+    }
+    if (logoutViewModel.logout.error && logoutViewModel.erroMensage != null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(logoutViewModel.erroMensage!),
           action: SnackBarAction(
             label: ErrorMessagesEnum.erro.message,
-            onPressed: () {},
+            onPressed: logoutViewModel.logout.execute,
           ),
         ),
       );

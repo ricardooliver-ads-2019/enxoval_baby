@@ -1,0 +1,2 @@
+D:/enxoval_baby/android/app/.cxx/RelWithDebInfo/612q3w50/x86/CMakeFiles/edit_cache.dir
+D:/enxoval_baby/android/app/.cxx/RelWithDebInfo/612q3w50/x86/CMakeFiles/rebuild_cache.dir
