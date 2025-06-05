@@ -1,0 +1,23 @@
+name: Auto PR on New Branch
+
+on:
+  push:
+    branches-ignore:
+      - main
+      - dev
+
+jobs:
+  create-pull-request:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Criar Pull Request automaticamente
+        uses: repo-sync/pull-request@v2
+        with:
+          source_branch: ${{ github.ref_name }}
+          destination_branch: dev
+          pr_title: '🚀 Auto PR: ${{ github.ref_name }} → dev'
+          pr_body: |
+            Esta PR foi criada automaticamente após o push da branch `${{ github.ref_name }}`
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
