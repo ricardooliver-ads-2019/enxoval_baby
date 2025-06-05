@@ -18,6 +18,9 @@ jobs:
       pull-requests: write
 
     steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
+
       - name: Cria Pull Request automaticamente
         uses: repo-sync/pull-request@v2
         with:
@@ -26,6 +29,6 @@ jobs:
           pr_title: '🚀 Auto PR: ${{ github.ref_name }} → dev'
           pr_body: |
             Esta PR foi criada automaticamente após o push da branch `${{ github.ref_name }}`.
-            > Essa automação ajuda a manter o fluxo de integração contínua organizado e sem pushs diretos em `dev` ou `main`.
+            > Essa automação ajuda a manter o fluxo de integração contínua organizado.
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
