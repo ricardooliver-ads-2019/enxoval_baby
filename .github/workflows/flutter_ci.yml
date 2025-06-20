@@ -103,3 +103,22 @@ jobs:
       - name: Verificar assinatura do APK
         run: |
           apksigner verify --verbose --print-certs build/app/outputs/flutter-apk/app-release.apk
+      - name: 🔥 Distribuir APK para Firebase App Distribution
+        if: github.ref == 'refs/heads/main'
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        run: |
+          firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk \
+            --app "1:68163902008:android:1f5c700286f5e40ac424cd" \
+            --groups "testadores" \
+            --release-notes "Build ${{ steps.vars.outputs.date }} - Commit: ${{ steps.vars.outputs.short_sha }} - Msg: ${{ steps.vars.outputs.commit_msg }}"
+
+      - name: 🔥 Distribuir APK para Firebase App Distribution
+        if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main'
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        run: |
+          firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk \
+            --app "1:68163902008:android:1f5c700286f5e40ac424cd" \
+            --groups "testadores" \
+            --release-notes "Build ${{ steps.vars.outputs.date }} - Commit: ${{ steps.vars.outputs.short_sha }} - Msg: ${{ steps.vars.outputs.commit_msg }}"

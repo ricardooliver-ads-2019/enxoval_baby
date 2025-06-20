@@ -14,6 +14,8 @@
 
 ## Tipo de mudanças
 
+Marque uma opção com "x":
+
 - [ ] ✨ Nova funcionalidade
 - [ ] 🛠️ Correção de bug
 - [ ] ❌ Breaking change (correção ou funcionalidade que modifica a funcionalidade existente)
@@ -21,6 +23,7 @@
 - [ ] ✅ Mudança na configuração de compilação
 - [ ] 📝 Documentação
 - [ ] 🗑️ Chore
+- [ ] 📝 Outra (descreva):
 
 ---
 
@@ -41,4 +44,4 @@
 ---
 
 ### 📌 Observações adicionais
-<!-- Algum ponto de atenção, decisão de arquitetura, etc -->
+<!-- Algum ponto de atenção a destacar?, decisão de arquitetura, etc -->
