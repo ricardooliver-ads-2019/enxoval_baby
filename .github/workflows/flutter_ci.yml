@@ -112,4 +112,4 @@ jobs:
           firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk \
             --app "1:68163902008:android:1f5c700286f5e40ac424cd" \
             --groups "testadores" \
-            --release-notes "Build ${{ steps.vars.outputs.date }} - Commit: ${{ steps.vars.outputs.short_sha }} - Msg: ${{ steps.vars.outputs.commit_msg }}"
+            --release-notes "Build ${{ steps.vars.outputs.date }} - ID: ${{ github.ref_name }}"
