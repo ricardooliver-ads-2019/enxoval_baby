@@ -10,10 +10,12 @@ abstract interface class AppFailure implements Exception {
 }
 
 class ClientException extends AppFailure {
+  final int statusCode; // Example status code, can be customized
   ClientException({
+    required this.statusCode,
+    required super.errorMessage,
     super.exception,
     super.stackTrace,
-    required super.errorMessage,
   });
 }
 
