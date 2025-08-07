@@ -1,0 +1,108 @@
+// rules_version = '2';
+// service cloud.firestore {
+//   match /databases/{database}/documents {
+
+//     // --- Coleção de Categorias Padrão (Read-Only) ---
+//     match /categories/{category} {
+//       allow read: if true; // Todos podem ler
+//       allow write: if false; // Ninguém pode modificar (apenas admin)
+//     }
+
+//     // --- Coleção de Usuários ---
+//     match /users/{userId} {
+//       allow read, update: if request.auth.uid == userId; // Só o próprio usuário pode ler/editar
+//       allow create: if request.auth.uid != null; // Qualquer usuário autenticado pode criar
+
+//       // Subcoleção de Categorias Personalizadas
+//       match /user_categories/{category} {
+//         allow read, write: if request.auth.uid == userId; // Apenas o dono
+//       }
+//     }
+
+//     // --- Coleção de Enxovais ---
+//     match /layettes/{layette} {
+//       allow read, write: if request.auth.uid == resource.data.userId; // Apenas o dono
+
+//       // Subcoleção de Categorias do Enxoval
+//       match /layette_categories/{category} {
+//         allow read, write: if request.auth.uid == get(/databases/$(database)/documents/layettes/$(layette)).data.userId;
+
+//         // Subcoleção de Itens
+//         match /items/{item} {
+//           allow read, write: if request.auth.uid == get(/databases/$(database)/documents/layettes/$(layette)).data.userId;
+//         }
+//       }
+//     }
+
+//     // --- Coleção de Listas de Presentes ---
+//     match /gift_lists/{giftList} {
+//       allow read: if true; // Qualquer um pode ver com o link
+//       allow write: if request.auth.uid == get(/databases/$(database)/documents/layettes/$(resource.data.layetteId)).data.userId; // Só o dono
+//     }
+
+//     // --- Coleção de Conteúdo Exclusivo (Premium) ---
+//     match /exclusive_content/{content} {
+//       allow read: if get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isPremium == true; // Apenas premium
+//       allow write: if false; // Ninguém pode modificar (apenas admin)
+//     }
+//   }
+// }
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // --- Coleção de Categorias Padrão (Read-Only) ---
+    match /categories/{category} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // --- Coleção de Usuários ---
+    match /users/{userId} {
+      allow read, update, delete: if request.auth.uid == userId;
+      allow create: if request.auth.uid != null;
+
+      // Subcoleção de Categorias Personalizadas
+      match /user_categories/{category} {
+        allow read, write: if request.auth.uid == userId;
+      }
+    }
+
+    // --- Coleção de Enxovais ---
+    match /layettes/{layette} {
+      // CREATE usa request.resource (ainda não existe no Firestore)
+      allow create: if request.auth.uid == request.resource.data.userId;
+      // READ/UPDATE/DELETE usa resource (já persistido)
+      allow read, update, delete: if request.auth.uid == resource.data.userId;
+
+      // Subcoleção de Categorias do Enxoval
+      match /layette_categories/{category} {
+        allow read, write: if request.auth.uid == resource.data.userId;
+
+        // Subcoleção de Itens
+        match /items/{item} {
+          allow read, write: if request.auth.uid == resource.data.userId;
+        }
+      }
+    }
+
+    // --- Coleção de Listas de Presentes ---
+    match /gift_lists/{giftList} {
+      allow read: if true;
+
+      // Alternativa para evitar get(): coloque layetteOwnerId diretamente no giftList
+      allow write: if request.auth.uid == resource.data.layetteOwnerId;
+    }
+
+    // --- Conteúdo Exclusivo (Premium) ---
+    match /exclusive_content/{content} {
+      allow read: if
+        request.auth != null &&
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isPremium == true;
+      
+      allow write: if false;
+    }
+  }
+}

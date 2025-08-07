@@ -37,6 +37,7 @@ dependencies:
   firebase_crashlytics: ^4.3.6
   firebase_analytics: ^11.4.6
   google_sign_in: ^6.3.0
+  cloud_functions: ^5.0.7
 
   # 
   image_picker: ^1.1.2
