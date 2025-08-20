@@ -48,7 +48,7 @@ class FirebaseAuthDatasource {
         return Failure(
           appFailures.AuthException(
               errorMessage: ErrorMessagesEnum
-                  .erroAoTentarLoginComEmalUsuarioNaoEncontrado.message),
+                  .erroAoTentarLoginComEmailUsuarioNaoEncontrado.message),
         );
       }
 

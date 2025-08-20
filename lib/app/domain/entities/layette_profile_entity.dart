@@ -4,39 +4,31 @@ import 'package:enxoval_baby/app/core/utils/enums/sex_baby_enum.dart';
 import 'package:equatable/equatable.dart';
 
 class LayetteProfileEntity extends Equatable {
-  final DateTime dueDate;
-  final double totalBudget;
+  final DateTime? dueDate;
   final ClimateEnum climate;
   final SexBabyEnum sexBaby;
-  final int numberOfBabies;
-  final String familyProfile; // Ex: "minimalista", "tradicional", "moderno"
+  final String? nameBaby;
+  final String? familyProfile; // Ex: "minimalista", "tradicional", "moderno"
   final int layetteDurationInMonths;
-  final double totalNeededAll;
-  final ExpectedBabySizeEnum expectedBabySize;
+
 
   const LayetteProfileEntity({
-    required this.dueDate,
-    required this.totalBudget,
+    this.dueDate,
     required this.climate,
     required this.sexBaby,
-    required this.numberOfBabies,
-    required this.familyProfile,
+    this.nameBaby,
+    this.familyProfile,
     required this.layetteDurationInMonths,
-    required this.totalNeededAll,
-    required this.expectedBabySize,
   });
 
   @override
   List<Object?> get props => [
         dueDate,
-        totalBudget,
         climate,
         sexBaby,
-        numberOfBabies,
         familyProfile,
         layetteDurationInMonths,
-        totalNeededAll,
-        expectedBabySize,
+        nameBaby,
       ];
 }
 

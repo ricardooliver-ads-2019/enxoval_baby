@@ -7,41 +7,34 @@ class LayetteProfileModel  extends LayetteProfileEntity{
 
   const LayetteProfileModel({
     required super.dueDate,
-    required super.totalBudget,
     required super.climate,
     required super.sexBaby,
-    required super.numberOfBabies,
+    required super.nameBaby,
     required super.familyProfile,
     required super.layetteDurationInMonths,
-    required super.totalNeededAll,
-    required super.expectedBabySize,
   });
 
   factory LayetteProfileModel.fromJson(Map<String, dynamic> json) {
     return LayetteProfileModel(
       dueDate: DateTime.parse(json['dueDate']),
-      totalBudget: (json['totalBudget'] as num).toDouble(),
       climate: ClimateEnum.fromString(json['climate']),
       sexBaby: SexBabyEnum.fromString(json['sexBaby']),
-      numberOfBabies: json['numberOfBabies'] as int,
       familyProfile: json['familyProfile'] as String,
+      nameBaby: json['nameBaby'] as String?,
       layetteDurationInMonths: json['layetteDurationInMonths'] as int,
-      totalNeededAll: (json['totalNeededAll'] as num).toDouble(),
-      expectedBabySize: ExpectedBabySizeEnum.fromString(json['expectedBabySize']),
+      
     );
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toMap() {
     return {
-      'dueDate': dueDate.toIso8601String(),
-      'totalBudget': totalBudget,
+      'dueDate': dueDate?.toIso8601String(),
       'climate': climate.name,
       'sexBaby': sexBaby.name,
-      'numberOfBabies': numberOfBabies,
+      'nameBaby': nameBaby,
       'familyProfile': familyProfile,
       'layetteDurationInMonths': layetteDurationInMonths,
-      'totalNeededAll': totalNeededAll,
-      'expectedBabySize': expectedBabySize.name,
+
     };
   }
 }

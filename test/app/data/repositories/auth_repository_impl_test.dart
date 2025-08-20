@@ -1,6 +1,7 @@
 import 'package:enxoval_baby/app/core/failures/app_failure.dart';
 import 'package:enxoval_baby/app/core/handler/exception_handler.dart';
 import 'package:enxoval_baby/app/data/datasources/remote/firebase_auth_datasource.dart';
+import 'package:enxoval_baby/app/data/datasources/remote/firebase_user_datasource.dart';
 import 'package:enxoval_baby/app/data/repositories/auth_repository_impl.dart';
 import 'package:enxoval_baby/app/domain/dtos/user_credential_dto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -9,6 +10,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:result_dart/result_dart.dart';
 
 class FireAuthMock extends Mock implements FirebaseAuthDatasource {}
+class FireUserMock extends Mock implements FirebaseUserDatasource {}
 
 class MockUser extends Mock implements User {
   @override
@@ -28,6 +30,7 @@ class ExceptionHandlerMock extends Mock implements ExceptionHandler {}
 
 void main() {
   late FirebaseAuthDatasource authDatasource;
+  late FirebaseUserDatasource userDatasource;
   late ExceptionHandler handler;
   late AuthRepositoryImpl authRepository;
   late User mockUser;
@@ -41,6 +44,7 @@ void main() {
 
   setUp(() {
     authDatasource = FireAuthMock();
+    userDatasource = FireUserMock();
     mockUser = MockUser();
     handler = ExceptionHandlerMock();
     // 🔹 Mockando authStateChanges ANTES de instanciar AuthRepositoryImpl
@@ -48,6 +52,7 @@ void main() {
         .thenAnswer((_) => const Stream<User?>.empty());
     authRepository = AuthRepositoryImpl(
       auth: authDatasource,
+      userDataSource: userDatasource,
       handler: handler,
     );
   });

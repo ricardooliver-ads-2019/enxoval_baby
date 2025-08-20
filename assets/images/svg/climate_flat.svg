@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Sol -->
+  <circle cx="340" cy="120" r="50" fill="#F6BD3A"/>
+  <!-- Raios do Sol -->
+  <g stroke="#F6BD3A" stroke-width="8" stroke-linecap="round">
+    <line x1="340" y1="40" x2="340" y2="10"/>
+    <line x1="340" y1="200" x2="340" y2="230"/>
+    <line x1="260" y1="120" x2="230" y2="120"/>
+    <line x1="420" y1="120" x2="450" y2="120"/>
+    <line x1="285" y1="65" x2="265" y2="45"/>
+    <line x1="395" y1="65" x2="415" y2="45"/>
+    <line x1="285" y1="175" x2="265" y2="195"/>
+    <line x1="395" y1="175" x2="415" y2="195"/>
+  </g>
+
+  <!-- Nuvens -->
+  <ellipse cx="200" cy="300" rx="100" ry="70" fill="#D9EBFF"/>
+  <ellipse cx="280" cy="300" rx="100" ry="70" fill="#D9EBFF"/>
+  <ellipse cx="160" cy="340" rx="80" ry="60" fill="#B9DBFF"/>
+
+  <!-- Floco de neve -->
+  <g transform="translate(380,360)" stroke="#5DA9F6" stroke-width="8" stroke-linecap="round">
+    <line x1="0" y1="-40" x2="0" y2="40"/>
+    <line x1="-40" y1="0" x2="40" y2="0"/>
+    <line x1="-28" y1="-28" x2="28" y2="28"/>
+    <line x1="-28" y1="28" x2="28" y2="-28"/>
+  </g>
+</svg>
