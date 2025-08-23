@@ -1,5 +1,4 @@
 import 'package:enxoval_baby/app/core/utils/enums/climate_enum.dart';
-import 'package:enxoval_baby/app/core/utils/enums/expected_baby_size_enum.dart';
 import 'package:enxoval_baby/app/core/utils/enums/sex_baby_enum.dart';
 import 'package:equatable/equatable.dart';
 

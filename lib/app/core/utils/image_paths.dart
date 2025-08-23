@@ -13,10 +13,10 @@ enum ImagePaths {
 
 enum ImageOnboardingLayetteCustomizationPaths {
   climate('climate.png'),
-  dueDate('due_date.png'),
-  familyProfile('family_profile.png'),
-  layetteDurationInMonths('layette_duration_in_months.png'),
-  sexBaby('sex_baby.png'),
+  dueDate('dueDate.png'),
+  familyProfile('familyProfile.png'),
+  layetteDurationInMonths('layetteDurationInMonths.png'),
+  sexBaby('sexBaby.png'),
   summary('summary.png');
 
   final String name;

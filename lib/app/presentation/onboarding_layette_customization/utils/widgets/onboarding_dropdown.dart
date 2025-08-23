@@ -1,29 +1,33 @@
 import 'package:flutter/material.dart';
 
-class OnboardingDropdown extends StatelessWidget {
-  final String value;
-  final List<String> items;
-  final ValueChanged<String?> onChanged;
+class OnboardingDropdown<T> extends StatelessWidget {
+  final T value;
+  final String? label;
+  final double? width;
+  final List<DropdownMenuEntry<T>> items;
+  final ValueChanged<T?> onChanged;
 
   const OnboardingDropdown({
     super.key,
     required this.value,
     required this.items,
     required this.onChanged,
+    this.label,
+    this.width,
   });
 
   @override
   Widget build(BuildContext context) {
-    return DropdownButtonFormField<String>(
-      value: value,
-      decoration: InputDecoration(
+    return DropdownMenu<T>(
+      initialSelection: value,
+      label: label != null ? Text(label!) : null,
+      width: width,
+      inputDecorationTheme: InputDecorationTheme(
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       ),
-      items: items
-          .map((item) => DropdownMenuItem(value: item, child: Text(item)))
-          .toList(),
-      onChanged: onChanged,
+      dropdownMenuEntries: items,
+      onSelected: onChanged,
     );
   }
 }

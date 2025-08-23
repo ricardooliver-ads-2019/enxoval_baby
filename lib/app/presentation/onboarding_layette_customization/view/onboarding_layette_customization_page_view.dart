@@ -1,7 +1,6 @@
 import 'package:enxoval_baby/app/core/utils/enums/climate_enum.dart';
 import 'package:enxoval_baby/app/core/utils/enums/sex_baby_enum.dart';
 import 'package:enxoval_baby/app/domain/entities/layette_profile_entity.dart';
-import 'package:enxoval_baby/app/presentation/onboarding_layette_customization/utils/widgets/onboarding_button.dart';
 import 'package:enxoval_baby/app/presentation/onboarding_layette_customization/utils/widgets/onboarding_progress_bar.dart';
 import 'package:enxoval_baby/app/presentation/onboarding_layette_customization/view/climate_view.dart';
 import 'package:enxoval_baby/app/presentation/onboarding_layette_customization/view/due_date_view.dart';
@@ -71,7 +70,7 @@ class _OnboardingLayetteCustomizationPageViewState
 
   void _finishOnboarding() {
     // salvar dados no Firestore/SharedPrefs
-    Navigator.pushReplacementNamed(context, "/home");
+    // Navigator.pushReplacementNamed(context, "/home");
   }
 
   @override
@@ -99,69 +98,73 @@ class _OnboardingLayetteCustomizationPageViewState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: OnboardingProgressBar(progress: _currentIndex / OnboardingLayetteCustomizationPagesEnum.values.length),
-        ),
-        body: PageView(
-          controller: _controller,
-          physics:
-              const NeverScrollableScrollPhysics(), // controle apenas via botões
-          onPageChanged: (index) {
-            setState(() => _currentIndex = index);
-          },
-          children: [
-            // OnboardingWelcome(),
-            SexBabyView(
-              args: ArgsSexBabyView(
-                sexBaby: _sexBaby,
-                nameBaby: _nameBaby,
-              ),
+      appBar: AppBar(
+        centerTitle: true,
+        title: OnboardingProgressBar(
+            progress: _currentIndex /
+                OnboardingLayetteCustomizationPagesEnum.values.length),
+      ),
+      body: PageView(
+        controller: _controller,
+        physics:
+            const NeverScrollableScrollPhysics(), // controle apenas via botões
+        onPageChanged: (index) {
+          setState(() => _currentIndex = index);
+        },
+        children: [
+          // OnboardingWelcome(),
+          SexBabyView(
+            args: ArgsSexBabyView(
+              sexBaby: _sexBaby,
+              nameBaby: _nameBaby,
+              previousPage: _previousPage,
+              nextPage: _nextPage,
             ),
-            DueDateView(
+          ),
+          DueDateView(
+            args: ArgsDueDateView(
               dueDate: _dueDate,
-            ),  
-            ClimateView(
+              previousPage: _previousPage,
+              nextPage: _nextPage,
+            ),
+          ),
+          ClimateView(
+            args: ArgsClimateView(
               climate: _climate,
+              previousPage: _previousPage,
+              nextPage: _nextPage,
             ),
-            LayetteDurationInMonthsView(
+          ),
+          LayetteDurationInMonthsView(
+            args: ArgsLayetteDurationInMonthsView(
               layetteDurationInMonths: _layetteDurationInMonths,
+              previousPage: _previousPage,
+              nextPage: _nextPage,
             ),
-            FamilyProfileView(
-              familyProfile: _familyProfile,  
+
+          ),
+          FamilyProfileView(
+            args: ArgsFamilyProfileView(
+              familyProfile: _familyProfile,
+              previousPage: _previousPage,
+              nextPage: _nextPage,
             ),
-            SummaryView(
-                args: ArgsSummaryView(
-              layetteProfile: LayetteProfileEntity(
-                sexBaby: _sexBaby.value,
-                nameBaby: _nameBaby.value,
-                dueDate: _dueDate.value,
-                climate: _climate.value,
-                layetteDurationInMonths: _layetteDurationInMonths.value,
-                familyProfile: _familyProfile.value,
-              ),
-              jumpToPage: _jumpToPage,
-            )),
-          ],
-        ),
-        bottomNavigationBar: // Botões
-            Row(
-          children: [
-            Expanded(
-              child: OnboardingButton(
-                label: "Voltar",
-                onPressed: _previousPage,
-                isPrimary: false,
-              ),
+          ),
+          SummaryView(
+              args: ArgsSummaryView(
+            layetteProfile: LayetteProfileEntity(
+              sexBaby: _sexBaby.value,
+              nameBaby: _nameBaby.value,
+              dueDate: _dueDate.value,
+              climate: _climate.value,
+              layetteDurationInMonths: _layetteDurationInMonths.value,
+              familyProfile: _familyProfile.value,
             ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: OnboardingButton(
-                label: _currentIndex == 4 ? "Concluir" : "Avançar",
-                onPressed: _nextPage,
-              ),
-            ),
-          ],
-        ));
+            jumpToPage: _jumpToPage,
+          )),
+        ],
+      ),
+      
+    );
   }
 }
