@@ -3,6 +3,7 @@ import 'package:enxoval_baby/app/core/utils/generate_id.dart';
 import 'package:enxoval_baby/app/data/models/category_model.dart';
 import 'package:enxoval_baby/app/data/models/layette_profile_model.dart';
 import 'package:enxoval_baby/app/domain/entities/layette_entity.dart';
+import 'package:enxoval_baby/app/domain/entities/layette_profile_entity.dart';
 
 
 class LayetteModel extends LayetteEntity {
@@ -26,9 +27,23 @@ class LayetteModel extends LayetteEntity {
     final id = json['layetteId'] ?? uuid;
     return LayetteModel(
       id: json['layetteId'] ?? uuid,
-      userId: json['userId'],
+      userId: json['userId']?? '', //TODO: pensar em uma solução melhor para o userId quando não estiver presente   
       nameBaby: json['nameBaby'],
       layetteProfile: LayetteProfileModel.fromJson(json['layetteProfile']),
+      updatedAt: now,
+      categories: CategoryModel.listMapCategories(json['categories'], id),
+      syncStatus: 1,
+    );
+  }
+  factory LayetteModel.fromRemoteJsonT(Map<String, dynamic> json, LayetteProfileEntity layetteProfile) {
+    final uuid = GenerateId.newId();
+    final now = DateTime.now().millisecondsSinceEpoch;
+    final id = json['layetteId'] ?? uuid;
+    return LayetteModel(
+      id: json['layetteId'] ?? uuid,
+      userId: json['userId']?? '', //TODO: pensar em uma solução melhor para o userId quando não estiver presente   
+      nameBaby: json['nameBaby'],
+      layetteProfile: layetteProfile,
       updatedAt: now,
       categories: CategoryModel.listMapCategories(json['categories'], id),
       syncStatus: 1,

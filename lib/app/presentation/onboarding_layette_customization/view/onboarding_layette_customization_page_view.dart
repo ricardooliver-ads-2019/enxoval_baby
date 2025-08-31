@@ -1,5 +1,7 @@
+import 'package:enxoval_baby/app/config/injector/injection.dart';
 import 'package:enxoval_baby/app/core/utils/enums/climate_enum.dart';
 import 'package:enxoval_baby/app/core/utils/enums/sex_baby_enum.dart';
+import 'package:enxoval_baby/app/core/utils/error_messages_enum.dart';
 import 'package:enxoval_baby/app/domain/entities/layette_profile_entity.dart';
 import 'package:enxoval_baby/app/presentation/onboarding_layette_customization/utils/widgets/onboarding_progress_bar.dart';
 import 'package:enxoval_baby/app/presentation/onboarding_layette_customization/view/climate_view.dart';
@@ -8,6 +10,7 @@ import 'package:enxoval_baby/app/presentation/onboarding_layette_customization/v
 import 'package:enxoval_baby/app/presentation/onboarding_layette_customization/view/layette_duration_in_months_view.dart';
 import 'package:enxoval_baby/app/presentation/onboarding_layette_customization/view/sex_baby_view.dart';
 import 'package:enxoval_baby/app/presentation/onboarding_layette_customization/view/summary_view.dart';
+import 'package:enxoval_baby/app/presentation/onboarding_layette_customization/view_model/onboarding_layette_customization_page_view_model.dart';
 import 'package:flutter/material.dart';
 
 enum OnboardingLayetteCustomizationPagesEnum {
@@ -29,6 +32,7 @@ class OnboardingLayetteCustomizationPageView extends StatefulWidget {
 
 class _OnboardingLayetteCustomizationPageViewState
     extends State<OnboardingLayetteCustomizationPageView> {
+  final _onboardingViewModel = Injection.inject<OnboardingLayetteCustomizationPageViewModel>();
   final PageController _controller = PageController();
   late final ValueNotifier<String?> _nameBaby;
   late final ValueNotifier<SexBabyEnum> _sexBaby;
@@ -40,15 +44,15 @@ class _OnboardingLayetteCustomizationPageViewState
 
   void _nextPage() {
     FocusScope.of(context).unfocus();
-    if (_currentIndex < 4) {
+    if (_currentIndex < 5) {
       _controller.nextPage(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
     }
 
-    if (_currentIndex == 4) {
-      _finishOnboarding();
+    if (_currentIndex == 5) {
+      // _finishOnboarding(); TODO: Ajustar
     }
   }
 
@@ -69,13 +73,22 @@ class _OnboardingLayetteCustomizationPageViewState
   }
 
   void _finishOnboarding() {
-    // salvar dados no Firestore/SharedPrefs
-    // Navigator.pushReplacementNamed(context, "/home");
+    _onboardingViewModel.fetchPersonalizedLayette.execute(
+      LayetteProfileEntity(
+        sexBaby: _sexBaby.value,
+        nameBaby: _nameBaby.value,
+        dueDate: _dueDate.value,
+        climate: _climate.value,
+        layetteDurationInMonths: _layetteDurationInMonths.value,
+        familyProfile: _familyProfile.value,
+      ),
+    );
   }
 
   @override
   void initState() {
     super.initState();
+    _onboardingViewModel.fetchPersonalizedLayette.addListener(_onResult);
     _nameBaby = ValueNotifier<String?>(null);
     _sexBaby = ValueNotifier<SexBabyEnum>(SexBabyEnum.indefinido);
     _dueDate = ValueNotifier<DateTime?>(null);
@@ -104,67 +117,90 @@ class _OnboardingLayetteCustomizationPageViewState
             progress: _currentIndex /
                 OnboardingLayetteCustomizationPagesEnum.values.length),
       ),
-      body: PageView(
-        controller: _controller,
-        physics:
-            const NeverScrollableScrollPhysics(), // controle apenas via botões
-        onPageChanged: (index) {
-          setState(() => _currentIndex = index);
-        },
-        children: [
-          // OnboardingWelcome(),
-          SexBabyView(
-            args: ArgsSexBabyView(
-              sexBaby: _sexBaby,
-              nameBaby: _nameBaby,
-              previousPage: _previousPage,
-              nextPage: _nextPage,
-            ),
-          ),
-          DueDateView(
-            args: ArgsDueDateView(
-              dueDate: _dueDate,
-              previousPage: _previousPage,
-              nextPage: _nextPage,
-            ),
-          ),
-          ClimateView(
-            args: ArgsClimateView(
-              climate: _climate,
-              previousPage: _previousPage,
-              nextPage: _nextPage,
-            ),
-          ),
-          LayetteDurationInMonthsView(
-            args: ArgsLayetteDurationInMonthsView(
-              layetteDurationInMonths: _layetteDurationInMonths,
-              previousPage: _previousPage,
-              nextPage: _nextPage,
-            ),
-
-          ),
-          FamilyProfileView(
-            args: ArgsFamilyProfileView(
-              familyProfile: _familyProfile,
-              previousPage: _previousPage,
-              nextPage: _nextPage,
-            ),
-          ),
-          SummaryView(
-              args: ArgsSummaryView(
-            layetteProfile: LayetteProfileEntity(
-              sexBaby: _sexBaby.value,
-              nameBaby: _nameBaby.value,
-              dueDate: _dueDate.value,
-              climate: _climate.value,
-              layetteDurationInMonths: _layetteDurationInMonths.value,
-              familyProfile: _familyProfile.value,
-            ),
-            jumpToPage: _jumpToPage,
-          )),
-        ],
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return PageView(
+            controller: _controller,
+            physics: const NeverScrollableScrollPhysics(),
+            onPageChanged: (index) {
+              setState(() => _currentIndex = index);
+            },
+            children: [
+              // OnboardingWelcome(),
+              SexBabyView(
+                args: ArgsSexBabyView(
+                  sexBaby: _sexBaby,
+                  nameBaby: _nameBaby,
+                  previousPage: _previousPage,
+                  nextPage: _nextPage,
+                ),
+              ),
+              DueDateView(
+                args: ArgsDueDateView(
+                  dueDate: _dueDate,
+                  previousPage: _previousPage,
+                  nextPage: _nextPage,
+                ),
+              ),
+              ClimateView(
+                args: ArgsClimateView(
+                  climate: _climate,
+                  previousPage: _previousPage,
+                  nextPage: _nextPage,
+                ),
+              ),
+              LayetteDurationInMonthsView(
+                args: ArgsLayetteDurationInMonthsView(
+                  layetteDurationInMonths: _layetteDurationInMonths,
+                  previousPage: _previousPage,
+                  nextPage: _nextPage,
+                ),
+              
+              ),
+              FamilyProfileView(
+                args: ArgsFamilyProfileView(
+                  familyProfile: _familyProfile,
+                  previousPage: _previousPage,
+                  nextPage: _nextPage,
+                ),
+              ),
+              SummaryView(
+                  args: ArgsSummaryView(
+                layetteProfile: LayetteProfileEntity(
+                  sexBaby: _sexBaby.value,
+                  nameBaby: _nameBaby.value,
+                  dueDate: _dueDate.value,
+                  climate: _climate.value,
+                  layetteDurationInMonths: _layetteDurationInMonths.value,
+                  familyProfile: _familyProfile.value,
+                ),
+                previousPage: _previousPage,
+                nextPage: _nextPage,
+                jumpToPage: _jumpToPage,
+              )),
+            ],
+          );
+        }
       ),
       
     );
+  }
+
+  void _onResult() {
+    if (_onboardingViewModel.fetchPersonalizedLayette.completed) {
+      _onboardingViewModel.fetchPersonalizedLayette.clearResult();
+    }
+    if (_onboardingViewModel.erroMensage != null &&
+        _onboardingViewModel.fetchPersonalizedLayette.error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(_onboardingViewModel.erroMensage!),
+          action: SnackBarAction(
+            label: ErrorMessagesEnum.erro.message,
+            onPressed: _finishOnboarding,
+          ),
+        ),
+      );
+    }
   }
 }

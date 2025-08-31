@@ -1,3 +1,4 @@
+import 'package:design_system/design_system.dart';
 import 'package:flutter/material.dart';
 
 class OnboardingTexts extends StatelessWidget {
@@ -17,18 +18,13 @@ class OnboardingTexts extends StatelessWidget {
         Text(
           title,
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+          style: DSTextStyle.subtitle3(context).semiStrong,
         ),
         const SizedBox(height: 8),
         Text(
           subtitle,
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Colors.grey[600],
-              ),
+          style: DSTextStyle.body3(context, cor: DSColors.textGray).defaults,
         ),
       ],
     );

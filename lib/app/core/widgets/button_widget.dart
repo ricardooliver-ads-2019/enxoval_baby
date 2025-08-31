@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class OnboardingButton extends StatelessWidget {
+class ButtonWidget extends StatelessWidget {
   final String label;
   final VoidCallback onPressed;
   final bool isPrimary;
 
-  const OnboardingButton({
+  const ButtonWidget({
     super.key,
     required this.label,
     required this.onPressed,

@@ -1,7 +1,7 @@
 // onboarding/climate_screen.dart
 import 'package:enxoval_baby/app/core/utils/enums/climate_enum.dart';
 import 'package:enxoval_baby/app/core/utils/image_paths.dart';
-import 'package:enxoval_baby/app/presentation/onboarding_layette_customization/utils/widgets/onboarding_button.dart';
+import 'package:enxoval_baby/app/presentation/onboarding_layette_customization/utils/widgets/onboarding_bottom_bar.dart';
 import 'package:enxoval_baby/app/presentation/onboarding_layette_customization/utils/widgets/onboarding_dropdown.dart';
 import 'package:enxoval_baby/app/presentation/onboarding_layette_customization/utils/widgets/onboarding_illustration.dart';
 import 'package:enxoval_baby/app/presentation/onboarding_layette_customization/utils/widgets/onboarding_texts.dart';
@@ -17,6 +17,14 @@ class ClimateView extends StatefulWidget {
 
 class _ClimateViewState extends State<ClimateView> {
   ClimateEnum selectedClimate = ClimateEnum.tropical;
+
+  @override
+  void initState() {
+    widget.args.climate.addListener(() {
+      selectedClimate = widget.args.climate.value;
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,32 +70,17 @@ class _ClimateViewState extends State<ClimateView> {
           ],
         ),
       ),
-      bottomNavigationBar: // Botões
-          Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          spacing: 16,
-          children: [
-            Expanded(
-              child: OnboardingButton(
-                label: "Voltar",
-                onPressed: widget.args.previousPage,
-                isPrimary: false,
-              ),
-            ),
-            Expanded(
-              child: OnboardingButton(
-                label: "Avançar",
-                onPressed: widget.args.nextPage,
-              ),
-            ),
-          ],
-        ),
+      bottomNavigationBar: OnboardingBottomBar(
+        onBack: widget.args.previousPage,
+        onNext: () {
+          widget.args.climate.value = selectedClimate;
+          widget.args.nextPage();
+        },
       ),
     );
   }
 }
+
 class ArgsClimateView {
   final ValueNotifier<ClimateEnum> climate;
   final void Function() nextPage;
@@ -100,4 +93,5 @@ class ArgsClimateView {
   });
 }
 
+          
   

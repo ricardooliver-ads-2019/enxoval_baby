@@ -19,12 +19,14 @@ class OnboardingDropdown<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownMenu<T>(
+      textInputAction: TextInputAction.next,
       initialSelection: value,
       label: label != null ? Text(label!) : null,
       width: width,
       inputDecorationTheme: InputDecorationTheme(
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       ),
       dropdownMenuEntries: items,
       onSelected: onChanged,

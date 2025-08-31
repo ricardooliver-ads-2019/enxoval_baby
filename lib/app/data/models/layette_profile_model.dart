@@ -5,11 +5,11 @@ import 'package:enxoval_baby/app/domain/entities/layette_profile_entity.dart';
 class LayetteProfileModel  extends LayetteProfileEntity{
 
   const LayetteProfileModel({
-    required super.dueDate,
+    super.dueDate,
     required super.climate,
     required super.sexBaby,
-    required super.nameBaby,
-    required super.familyProfile,
+    super.nameBaby,
+    super.familyProfile,
     required super.layetteDurationInMonths,
   });
 
@@ -24,6 +24,7 @@ class LayetteProfileModel  extends LayetteProfileEntity{
       
     );
   }
+
 
   Map<String, dynamic> toMap() {
     return {

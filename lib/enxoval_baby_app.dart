@@ -1,5 +1,6 @@
 import 'package:enxoval_baby/app/config/navigation/app_router.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 class EnxovalBabyApp extends StatefulWidget {
   const EnxovalBabyApp({super.key});
@@ -15,6 +16,15 @@ class _EnxovalBabyAppState extends State<EnxovalBabyApp> {
     return MaterialApp.router(
       title: 'Enxoval Baby',
       routerConfig: router,
+      locale: const Locale('pt', 'BR'),
+      supportedLocales: const [
+        Locale('pt', 'BR'),
+      ],
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
     );
   }
 }

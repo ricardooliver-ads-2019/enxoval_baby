@@ -6,6 +6,7 @@ class DSInputTextFormField extends StatefulWidget {
   final TextEditingController controller;
   final FocusNode focus;
   final bool autofocus;
+  final bool readOnly;
   final bool enabled;
   final bool isLoading;
   final bool showCounterMaxLength;
@@ -30,6 +31,7 @@ class DSInputTextFormField extends StatefulWidget {
     required this.controller,
     required this.focus,
     this.autofocus = false,
+    this.readOnly = false,
     this.enabled = true,
     this.autovalidateMode,
     this.maxLength,
@@ -61,6 +63,7 @@ class _DSInputTextFormFieldState extends State<DSInputTextFormField> {
       animation: widget.focus,
       builder: (_, __) {
         return TextFormField(
+          readOnly: widget.readOnly,
           controller: widget.controller,
           focusNode: widget.focus,
           autofocus: widget.autofocus,

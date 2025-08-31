@@ -8,6 +8,13 @@ enum AppStrings {
   senhaObrigatorio('Senha*'),
   continuar('Continuar'),
   salvar('Salvar'),
+  cancelar('Cancelar'),
+  sim('Sim'),
+  confirmar('Confirmar'),
+  concluir('Concluir'),
+  finalizar('Finalizar'),
+  voltar('Voltar'),
+  avancar('Avançar'),
   ;
 
   final String text;

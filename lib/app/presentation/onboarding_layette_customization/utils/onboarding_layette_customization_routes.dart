@@ -11,10 +11,17 @@ enum OnboardingLayetteCustomizationRoutes {
   String get path => '/$routeName';
 
   static List<GoRoute> routes = [
+    
     GoRoute(
       name: onboardingLayetteCustomizationPageView.routeName,
       path: onboardingLayetteCustomizationPageView.path,
-      builder: (context, state) => const OnboardingLayetteCustomizationPageView(),
+
+
+
+      builder: (context, state) {
+        
+        return const OnboardingLayetteCustomizationPageView();
+      },
     ),
   ];
 }

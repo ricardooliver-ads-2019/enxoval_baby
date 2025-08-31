@@ -1,5 +1,5 @@
 import 'package:enxoval_baby/app/core/utils/image_paths.dart';
-import 'package:enxoval_baby/app/presentation/onboarding_layette_customization/utils/widgets/onboarding_button.dart';
+import 'package:enxoval_baby/app/presentation/onboarding_layette_customization/utils/widgets/onboarding_bottom_bar.dart';
 import 'package:enxoval_baby/app/presentation/onboarding_layette_customization/utils/widgets/onboarding_dropdown.dart';
 import 'package:enxoval_baby/app/presentation/onboarding_layette_customization/utils/widgets/onboarding_illustration.dart';
 import 'package:enxoval_baby/app/presentation/onboarding_layette_customization/utils/widgets/onboarding_texts.dart';
@@ -19,6 +19,14 @@ class _LayetteDurationInMonthsViewState
     extends State<LayetteDurationInMonthsView> {
   int selectedDurationInMonths = 3;
   List<int> durationOptions = [3, 6, 9, 12];
+
+  @override
+  void initState() {
+    widget.args.layetteDurationInMonths.addListener(() {
+      selectedDurationInMonths = widget.args.layetteDurationInMonths.value;
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,27 +72,12 @@ class _LayetteDurationInMonthsViewState
           ],
         ),
       ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          spacing: 16,
-          children: [
-            Expanded(
-              child: OnboardingButton(
-                label: "Voltar",
-                onPressed: widget.args.previousPage,
-                isPrimary: false,
-              ),
-            ),
-            Expanded(
-              child: OnboardingButton(
-                label: "Avançar",
-                onPressed: widget.args.nextPage,
-              ),
-            ),
-          ],
-        ),
+      bottomNavigationBar: OnboardingBottomBar(
+        onBack: widget.args.previousPage,
+        onNext: () {
+          widget.args.layetteDurationInMonths.value = selectedDurationInMonths;
+          widget.args.nextPage();
+        },
       ),
     );
   }

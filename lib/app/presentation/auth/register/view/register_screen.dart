@@ -6,7 +6,7 @@ import 'package:enxoval_baby/app/core/utils/validation_messages_enum.dart';
 import 'package:enxoval_baby/app/core/utils/validators/validations_mixin.dart';
 import 'package:enxoval_baby/app/presentation/auth/register/view_model/register_view_model.dart';
 import 'package:enxoval_baby/app/presentation/auth/utils/auth_strings.dart';
-import 'package:enxoval_baby/app/presentation/auth/utils/widgets/action_buttom_widget.dart';
+import 'package:enxoval_baby/app/core/widgets/action_buttom_widget.dart';
 import 'package:enxoval_baby/app/presentation/auth/utils/widgets/welcome_illustration_widget.dart';
 import 'package:flutter/material.dart';
 
