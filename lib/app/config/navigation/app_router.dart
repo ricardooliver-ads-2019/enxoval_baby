@@ -2,6 +2,7 @@ import 'package:enxoval_baby/app/config/injector/injection.dart';
 import 'package:enxoval_baby/app/domain/repositories/auth_repository.dart';
 import 'package:enxoval_baby/app/presentation/auth/utils/auth_routes.dart';
 import 'package:enxoval_baby/app/presentation/home_enxoval/utils/routes/home_enxoval_routes.dart';
+import 'package:enxoval_baby/app/presentation/onboarding_layette_customization/utils/onboarding_layette_customization_routes.dart';
 import 'package:enxoval_baby/app/presentation/splash/utils/splash_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -15,8 +16,9 @@ class AppRouter {
       redirect: _redirect,
       routes: [
         ...SplashRoutes.routes,
-        ...HomeEnxovalRoutes.routes,
         ...AuthRoutes.routes,
+        ...OnboardingLayetteCustomizationRoutes.routes,
+        ...HomeEnxovalRoutes.routes,
       ],
     );
   }
@@ -37,7 +39,8 @@ Future<String?> _redirect(BuildContext context, GoRouterState state) async {
   }
 
   if (isAuthenticated && isPublicRoute) {
-    return HomeEnxovalRoutes.homeEnxoval.path;
+    // return HomeEnxovalRoutes.homeEnxoval.path;
+    return OnboardingLayetteCustomizationRoutes.onboardingLayetteCustomizationPageView.path;
   }
 
   return null;

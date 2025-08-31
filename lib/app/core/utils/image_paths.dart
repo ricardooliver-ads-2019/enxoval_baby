@@ -11,6 +11,20 @@ enum ImagePaths {
   String get path => 'assets/images/$name';
 }
 
+enum ImageOnboardingLayetteCustomizationPaths {
+  climate('climate.png'),
+  dueDate('dueDate.png'),
+  familyProfile('familyProfile.png'),
+  layetteDurationInMonths('layetteDurationInMonths.png'),
+  sexBaby('sexBaby.png'),
+  summary('summary.png');
+
+  final String name;
+  const ImageOnboardingLayetteCustomizationPaths(this.name);
+
+  String get path => 'assets/images/$name';
+}
+
 enum ImageThoughtPaths {
   girlClothes('girlClothes.png'),
   shoes('shoes.png'),

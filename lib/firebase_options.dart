@@ -69,7 +69,9 @@ class DefaultFirebaseOptions {
     messagingSenderId: '68163902008',
     projectId: 'enxovalbaby-d4846',
     storageBucket: 'enxovalbaby-d4846.firebasestorage.app',
+    androidClientId: '68163902008-k0ofn8tu4e4o9em39h7e09ka55q9gnj2.apps.googleusercontent.com',
     iosClientId: '68163902008-9irfqa4njaengneftkupo569jou2imp9.apps.googleusercontent.com',
     iosBundleId: 'com.example.enxovalBaby',
   );
+
 }

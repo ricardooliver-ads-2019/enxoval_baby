@@ -124,4 +124,23 @@ mixin ValidationsMixin {
     }
     return null;
   }
+
+  String? dueDateValidator(DateTime? date) {
+    if (date == null) {
+      return ValidationMessagesEnum.campoObrigatorio.text;
+    }
+
+    final now = DateTime.now();
+    final oneYearFromNow = DateTime.now().add(const Duration(days: 365));
+
+    if (date.isBefore(now)) {
+      return 'A data não pode ser anterior à data atual';
+    }
+
+    if (date.isAfter(oneYearFromNow)) {
+      return 'A data não pode ser superior a 1 ano a partir de hoje';
+    }
+
+    return null;
+  }
 }

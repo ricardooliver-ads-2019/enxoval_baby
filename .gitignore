@@ -12,6 +12,7 @@ lib/firebase_options.dart
 android/app/google-services.json
 ios/Runner/GoogleServices-Info.plist
 ios/firebase_app_id_file.json
+node_modules/
 
 # ======================
 # 🏗️ BUILD FILES
@@ -54,3 +55,20 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# ======================
+# ⚙️ Firebase Functions extra
+# ======================
+functions/.firebase/
+
+# ======================
+# 🔒 Environment files
+# ======================
+.env*
+ 
+# ======================
+# 📦 CI/CD e relatórios de teste
+# ======================
+coverage/
+test_outputs/
+.github/workflows/*.log
