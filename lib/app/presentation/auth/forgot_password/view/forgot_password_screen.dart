@@ -1,5 +1,6 @@
 import 'package:design_system/design_system.dart';
 import 'package:enxoval_baby/app/config/injector/injection.dart';
+import 'package:enxoval_baby/app/core/command/command_handler_mixin.dart';
 import 'package:enxoval_baby/app/core/utils/app_strings.dart';
 import 'package:enxoval_baby/app/core/utils/error_messages_enum.dart';
 import 'package:enxoval_baby/app/core/utils/validators/validations_mixin.dart';
@@ -17,7 +18,7 @@ class ForgotPasswordScreen extends StatefulWidget {
 }
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
-    with ValidationsMixin {
+    with ValidationsMixin, CommandHandlerMixin {
   final _forgotPasswordViewModel = Injection.inject<ForgotPasswordViewModel>();
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
@@ -44,8 +45,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
   void dispose() {
     _emailController.dispose();
     _emailFocus.dispose();
-
-    _forgotPasswordViewModel.removeListener(_onResult);
     super.dispose();
   }
 
@@ -56,7 +55,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
         toolbarHeight: 40,
       ),
       body: ListenableBuilder(
-          listenable: _forgotPasswordViewModel,
+          listenable: _forgotPasswordViewModel.resetPassword,
           builder: (context, child) {
             return SingleChildScrollView(
               padding:

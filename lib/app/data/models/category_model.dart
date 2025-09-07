@@ -38,7 +38,7 @@ class CategoryModel extends CategoryEntity {
         isCustom: (m['isCustom'] ?? 0) == 1,
         updatedAt: (m['updatedAt'] ?? 0) as int,
         syncStatus: (m['syncStatus'] ?? 1) as int,
-        items: ItemModel.listMapItemsDd(m['items']),
+        items: const [],
       );
 
   Map<String, dynamic> toMap() => {
@@ -53,7 +53,23 @@ class CategoryModel extends CategoryEntity {
         'totalSpent': totalSpent,
         'updatedAt': updatedAt,
         'syncStatus': syncStatus,
-        'items': items.map((item) => (item as ItemModel).toMap()).toList(),
+        'items': items.map((item) => (ItemModel(
+              categoryId: item.categoryId,
+              id: item.id,
+              name: item.name,
+              priority: item.priority,
+              quantityNeeded: item.quantityNeeded,
+              quantityPurchased: item.quantityPurchased,
+              icon: item.icon,
+              isCustom: item.isCustom,
+              isPresente: item.isPresente,
+              value: item.value,
+              notesItems: item.notesItems,
+              notesUser: item.notesUser,
+              purchaseLink: item.purchaseLink,
+              syncStatus: item.syncStatus,
+              updatedAt: item.updatedAt,
+            )).toMap()).toList(),
       };
 
   Map<String, dynamic> toDbMap() => {

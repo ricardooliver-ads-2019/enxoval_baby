@@ -4,10 +4,12 @@ CREATE TABLE layettes (
   id TEXT PRIMARY KEY,
   userId TEXT,
   nameBaby TEXT,
+  sexBaby TEXT,
   dueDate INTEGER,
   totalBudget INTEGER,
   climate TEXT,
   numberOfBabies INTEGER,
+  familyProfile TEXT,
   layetteDurationInMonths INTEGER,
   globalProgress REAL,
   totalSpentAll INTEGER,
@@ -68,4 +70,5 @@ const List<String> createIndexes = [
   'CREATE INDEX IF NOT EXISTS idx_categories_layette ON categories(layetteId);',
   'CREATE INDEX IF NOT EXISTS idx_categories_sync ON categories(syncStatus);',
   'CREATE INDEX IF NOT EXISTS idx_layettes_sync ON layettes(syncStatus);',
+  'CREATE INDEX IF NOT EXISTS idx_layettes_user ON layettes(userId);',
 ];

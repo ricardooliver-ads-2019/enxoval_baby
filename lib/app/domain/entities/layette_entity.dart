@@ -5,12 +5,7 @@ import 'package:equatable/equatable.dart';
 class LayetteEntity extends Equatable {
   final String id;
   final String userId;
-  final String? nameBaby;
   final LayetteProfileEntity layetteProfile;
-  // final double globalProgress;
-  // final int totalSpentAll;
-  // final int totalNeededAll;
-  // final int totalPurchasedAll;
   final int updatedAt;
   final int syncStatus;
   final List<CategoryEntity> categories;
@@ -18,12 +13,7 @@ class LayetteEntity extends Equatable {
   const LayetteEntity({
     required this.id,
     required this.userId,
-    required this.nameBaby,
     required this.layetteProfile,
-    // required this.globalProgress,
-    // required this.totalSpentAll,
-    // required this.totalNeededAll,
-    // required this.totalPurchasedAll,
     required this.updatedAt,
     this.syncStatus = 1,
     required this.categories,
@@ -55,7 +45,6 @@ class LayetteEntity extends Equatable {
   List<Object?> get props => [
         id,
         userId,
-        nameBaby,
         layetteProfile,
         totalNeededAll,
         totalPurchasedAll,

@@ -1,20 +1,21 @@
+import 'package:enxoval_baby/app/core/result/result.dart';
 import 'package:enxoval_baby/app/domain/dtos/user_credential_dto.dart';
 import 'package:enxoval_baby/app/domain/entities/user_credential_entity.dart';
 import 'package:enxoval_baby/app/domain/entities/user_entity.dart';
 import 'package:flutter/material.dart';
-import 'package:result_dart/result_dart.dart';
 
-abstract interface class AuthRepository {
+
+abstract class AuthRepository extends ChangeNotifier {
   Stream<UserCredentialEntity?> get authStateChanges;
   ValueNotifier<bool> get isAuth;
-  AsyncResult<UserCredentialEntity> register(
+  Future<Result<UserCredentialEntity>> register(
     UserCredentialDto userCredential,
   );
-  AsyncResult<UserCredentialEntity> login(
+  Future<Result<UserCredentialEntity>> login(
     UserCredentialDto userCredential,
   );
 
-  AsyncResult<Unit> logout();
-  AsyncResult<Unit> resetPassword({required String email});
-  AsyncResult<Unit> createUser(UserEntity user);
+  Future<Result<void>> logout();
+  Future<Result<void>> resetPassword({required String email});
+  Future<Result<void>> createUser(UserEntity user);
 }
