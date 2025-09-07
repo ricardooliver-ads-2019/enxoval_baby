@@ -5,6 +5,8 @@ import 'package:enxoval_baby/app/core/result/result_extensions.dart';
 import 'package:enxoval_baby/app/data/datasources/local/secure_user_storage.dart';
 import 'package:enxoval_baby/app/data/datasources/remote/firebase_auth_datasource.dart';
 import 'package:enxoval_baby/app/data/datasources/remote/firebase_user_datasource.dart';
+import 'package:enxoval_baby/app/data/models/user_model.dart';
+import 'package:enxoval_baby/app/data/models/user_settings_model.dart';
 import 'package:enxoval_baby/app/data/repositories/auth_repository_impl.dart';
 import 'package:enxoval_baby/app/domain/dtos/user_credential_dto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -39,9 +41,24 @@ void main() {
   late User mockUser;
 
   setUpAll(() {
-    // Fallbacks usados pelo mocktail quando usamos any() em tipos não-primários
+    // Fallbacks para tipos não-primários usados com any()
     registerFallbackValue(Exception());
     registerFallbackValue(StackTrace.empty);
+    registerFallbackValue(
+      UserModel(
+        id: '123456',
+        email: 'test@example.com',
+        name: 'Test User',
+        profilePhoto: 'https://photo.url/test.png',
+        settings: const UserSettingsModel(
+          notificationsEnabled: true,
+          isPremium: false,
+          theme: 'neutro',
+        ),
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      ),
+    );
   });
 
   setUp(() {
@@ -59,7 +76,7 @@ void main() {
       auth: authDatasource,
       userDataSource: userDatasource,
       handler: handler,
-      session: session, // << OBRIGATÓRIO AGORA
+      session: session,
     );
   });
 
@@ -84,13 +101,13 @@ void main() {
 
         // Assert
         expect(result.isError, isTrue);
-        // Não deve chamar saveCurrentUser, mas se quiser garantir:
+
+        // O login NÃO passa isPremium/isNotificationsEnabled
         verifyNever(() => session.saveCurrentUser(
               id: any(named: 'id'),
               email: any(named: 'email'),
               name: any(named: 'name'),
               photoUrl: any(named: 'photoUrl'),
-              isPremium: any(named: 'isPremium'),
             ));
       },
     );
@@ -120,7 +137,6 @@ void main() {
             email: any(named: 'email'),
             name: any(named: 'name'),
             photoUrl: any(named: 'photoUrl'),
-            isPremium: any(named: 'isPremium'),
           ));
     });
 
@@ -131,13 +147,12 @@ void main() {
             password: any(named: 'password'),
           )).thenAnswer((_) async => Result.ok(mockUser));
 
-      // O repo salva a sessão local no sucesso do login
+      // O repo salva a sessão local no sucesso do login (sem isPremium/notifications)
       when(() => session.saveCurrentUser(
             id: any(named: 'id'),
             email: any(named: 'email'),
             name: any(named: 'name'),
             photoUrl: any(named: 'photoUrl'),
-            isPremium: any(named: 'isPremium'),
           )).thenAnswer((_) async {});
 
       // Act
@@ -153,39 +168,122 @@ void main() {
             email: 'test@example.com',
             name: 'Test User',
             photoUrl: 'https://photo.url/test.png',
-            isPremium: any(named: 'isPremium'),
           )).called(1);
     });
   });
 
-  group('Testes de register (exemplo)', () {
-    test('Register: cria user no Firestore e salva sessão local', () async {
+  group('Testes de register', () {
+    test(
+        'Sucesso: deve criar usuário no Firebase Auth, no Firestore e salvar sessão local',
+        () async {
       // Arrange
       when(() => authDatasource.register(
             email: any(named: 'email'),
             password: any(named: 'password'),
           )).thenAnswer((_) async => Result.ok(mockUser));
 
-      // userDatasource.createUser retorna unit
       when(() => userDatasource.createUser(any()))
-          .thenAnswer((_) async =>  Result.ok(null));
+          .thenAnswer((_) async => Result.ok(null));
 
-      // Salva sessão local
       when(() => session.saveCurrentUser(
             id: any(named: 'id'),
             email: any(named: 'email'),
             name: any(named: 'name'),
             photoUrl: any(named: 'photoUrl'),
             isPremium: any(named: 'isPremium'),
+            isNotificationsEnabled: any(named: 'isNotificationsEnabled'),
           )).thenAnswer((_) async {});
 
       // Act
       final result = await authRepository.register(const UserCredentialDto(
-        email: 'e@e.com',
+        email: 'test@example.com',
         password: '123456',
       ));
 
       // Assert
+      expect(result.isOk, isTrue);
+
+      // Ordem: register -> createUser -> saveCurrentUser (com flags)
+      verifyInOrder([
+        () => authDatasource.register(
+              email: any(named: 'email'),
+              password: any(named: 'password'),
+            ),
+        () => userDatasource.createUser(any()),
+        () => session.saveCurrentUser(
+              id: '123456',
+              email: 'test@example.com',
+              name: 'Test User',
+              photoUrl: 'https://photo.url/test.png',
+              isPremium: false,
+              isNotificationsEnabled: true,
+            ),
+      ]);
+    });
+
+    test('Falha: deve retornar erro se o registro no Firebase Auth falhar',
+        () async {
+      // Arrange — **lança** exceção (não Result.error)
+      when(() => authDatasource.register(
+            email: any(named: 'email'),
+            password: any(named: 'password'),
+          )).thenThrow(Exception('Firebase Auth Error'));
+
+      when(() => handler.handle(any(), any()))
+          .thenReturn(Exception('Firebase Auth Error'));
+
+      // Act
+      final result = await authRepository.register(const UserCredentialDto(
+        email: 'invalid@test.com',
+        password: '123456',
+      ));
+
+      // Assert
+      expect(result.isError, isTrue);
+      verifyNever(() => userDatasource.createUser(any()));
+      verifyNever(() => session.saveCurrentUser(
+            id: any(named: 'id'),
+            email: any(named: 'email'),
+            name: any(named: 'name'),
+            photoUrl: any(named: 'photoUrl'),
+            isPremium: any(named: 'isPremium'),
+            isNotificationsEnabled: any(named: 'isNotificationsEnabled'),
+          ));
+    });
+
+    test(
+        'Falha na criação do perfil no Firestore: registro segue como sucesso (comportamento atual)',
+        () async {
+      // Arrange
+      when(() => authDatasource.register(
+            email: any(named: 'email'),
+            password: any(named: 'password'),
+          )).thenAnswer((_) async => Result.ok(mockUser));
+
+      // createUser retorna erro, mas o repo não propaga nem verifica esse Result
+      when(() => userDatasource.createUser(any()))
+          .thenAnswer((_) async => Result.error(Exception('Firestore Error')));
+
+      // (Não será usado, mas deixamos stubado)
+      when(() => handler.handle(any(), any()))
+          .thenReturn(Exception('Firestore Error'));
+
+      when(() => session.saveCurrentUser(
+            id: any(named: 'id'),
+            email: any(named: 'email'),
+            name: any(named: 'name'),
+            photoUrl: any(named: 'photoUrl'),
+            isPremium: any(named: 'isPremium'),
+            isNotificationsEnabled: any(named: 'isNotificationsEnabled'),
+          )).thenAnswer((_) async {});
+
+      // Act
+      final result = await authRepository.register(const UserCredentialDto(
+        email: 'test@example.com',
+        password: '123456',
+      ));
+
+      // Assert — sucesso, sessão salva
       expect(result.isOk, isTrue);
       verify(() => userDatasource.createUser(any())).called(1);
       verify(() => session.saveCurrentUser(
@@ -193,7 +291,8 @@ void main() {
             email: 'test@example.com',
             name: 'Test User',
             photoUrl: 'https://photo.url/test.png',
-            isPremium: any(named: 'isPremium'),
+            isPremium: false,
+            isNotificationsEnabled: true,
           )).called(1);
     });
   });
