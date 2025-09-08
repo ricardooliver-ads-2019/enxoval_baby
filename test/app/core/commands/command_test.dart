@@ -1,6 +1,7 @@
-import 'package:enxoval_baby/app/core/commands/command.dart';
+import 'package:enxoval_baby/app/core/command/command.dart';
+import 'package:enxoval_baby/app/core/result/result.dart';
+import 'package:enxoval_baby/app/core/result/result_extensions.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:result_dart/result_dart.dart';
 
 void main() {
   group("Shoul test Commands", () {
@@ -16,7 +17,7 @@ void main() {
       expect(command.error, false);
       expect(command.completed, true);
       expect(command.result, isNotNull);
-      expect((command.result as Success).getOrNull(), 'Success');
+      expect((command.result as Ok).asOk.value, 'Success');
     });
 
     test('command0 Failure', () async {
@@ -31,7 +32,7 @@ void main() {
       expect(command.completed, false);
       expect(command.error, true);
       expect(command.result, isNotNull);
-      expect(command.result!.exceptionOrNull(), isA<Exception>());
+      expect(command.result!.asError.error, isA<Exception>());
     });
 
     test('command1 Success', () async {
@@ -46,7 +47,7 @@ void main() {
       expect(command.error, false);
       expect(command.completed, true);
       expect(command.result, isNotNull);
-      expect((command.result as Success).getOrNull(), 'Success: Email');
+      expect((command.result as Ok).asOk.value, 'Success: Email');
     });
 
     test('command1 Failure', () async {
@@ -61,27 +62,27 @@ void main() {
       expect(command.completed, false);
       expect(command.error, true);
       expect(command.result, isNotNull);
-      expect(command.result!.exceptionOrNull(), isA<Exception>());
+      expect(command.result!.asError.error, isA<Exception>());
     });
   });
 }
 
-AsyncResult<String> getOkResultCommand0() async {
+Future<Result<String>> getOkResultCommand0() async {
   await Future.delayed(const Duration(milliseconds: 500));
-  return const Success('Success');
+  return Result.ok('Success');
 }
 
-AsyncResult<String> getFailureResultCommand0() async {
+Future<Result<String>> getFailureResultCommand0() async {
   await Future.delayed(const Duration(milliseconds: 500));
-  return Failure(Exception());
+  return Result.error(Exception());
 }
 
-AsyncResult<String> getOkResultCommand1(String params) async {
+Future<Result<String>> getOkResultCommand1(String params) async {
   await Future.delayed(const Duration(milliseconds: 500));
-  return Success('Success: $params');
+  return Result.ok('Success: $params');
 }
 
-AsyncResult<String> getFailureResultCommand1(String params) async {
+Future<Result<String>> getFailureResultCommand1(String params) async {
   await Future.delayed(const Duration(milliseconds: 500));
-  return Failure(Exception('Error: $params'));
+  return Result.error(Exception('Error: $params'));
 }

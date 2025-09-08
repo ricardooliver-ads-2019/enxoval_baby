@@ -11,6 +11,14 @@ class HomeEnxovalScreen extends StatefulWidget {
 
 class _HomeEnxovalScreenState extends State<HomeEnxovalScreen> {
   @override
+  void initState() {
+    super.initState();
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   debugPrint('▶️ Executando getLocalProfile.execute()');
+    //   _vmSplash.getLocalProfile.execute();
+    // });
+  }
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(

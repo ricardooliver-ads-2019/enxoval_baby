@@ -1,21 +1,16 @@
-// layette_model.dart
+import 'package:enxoval_baby/app/core/utils/enums/climate_enum.dart';
+import 'package:enxoval_baby/app/core/utils/enums/sex_baby_enum.dart';
 import 'package:enxoval_baby/app/core/utils/generate_id.dart';
 import 'package:enxoval_baby/app/data/models/category_model.dart';
 import 'package:enxoval_baby/app/data/models/layette_profile_model.dart';
 import 'package:enxoval_baby/app/domain/entities/layette_entity.dart';
 import 'package:enxoval_baby/app/domain/entities/layette_profile_entity.dart';
 
-
 class LayetteModel extends LayetteEntity {
   const LayetteModel({
     required super.id,
     required super.userId,
-    super.nameBaby,
     required super.layetteProfile,
-    // required super.globalProgress,
-    // required super.totalSpentAll,
-    // required super.totalNeededAll,
-    // required super.totalPurchasedAll,
     required super.updatedAt,
     super.syncStatus,
     required super.categories,
@@ -27,22 +22,25 @@ class LayetteModel extends LayetteEntity {
     final id = json['layetteId'] ?? uuid;
     return LayetteModel(
       id: json['layetteId'] ?? uuid,
-      userId: json['userId']?? '', //TODO: pensar em uma solução melhor para o userId quando não estiver presente   
-      nameBaby: json['nameBaby'],
+      userId: json['userId'] ?? '',
+      //TODO: pensar em uma solução melhor para o userId quando não estiver presente
       layetteProfile: LayetteProfileModel.fromJson(json['layetteProfile']),
       updatedAt: now,
       categories: CategoryModel.listMapCategories(json['categories'], id),
       syncStatus: 1,
     );
   }
-  factory LayetteModel.fromRemoteJsonT(Map<String, dynamic> json, LayetteProfileEntity layetteProfile) {
+  factory LayetteModel.fromRemoteJsonT({
+    required Map<String, dynamic> json,
+    required LayetteProfileEntity layetteProfile,
+    required String userId,
+  }) {
     final uuid = GenerateId.newId();
     final now = DateTime.now().millisecondsSinceEpoch;
     final id = json['layetteId'] ?? uuid;
     return LayetteModel(
       id: json['layetteId'] ?? uuid,
-      userId: json['userId']?? '', //TODO: pensar em uma solução melhor para o userId quando não estiver presente   
-      nameBaby: json['nameBaby'],
+      userId: userId,
       layetteProfile: layetteProfile,
       updatedAt: now,
       categories: CategoryModel.listMapCategories(json['categories'], id),
@@ -50,41 +48,76 @@ class LayetteModel extends LayetteEntity {
     );
   }
 
-  factory LayetteModel.fromDbMap(Map<String, dynamic> m) => LayetteModel(
-        id: m['id'] as String,
-        userId: m['userId'] as String,
-        nameBaby: m['nameBaby'] as String?,
-        layetteProfile: LayetteProfileModel.fromJson(m['layetteProfile']),
-        updatedAt: (m['updatedAt'] ?? 0) as int,
-        syncStatus: (m['syncStatus'] ?? 1) as int,
-        categories: CategoryModel.listMapCategoriesDb(m['categories'] ?? []),
-      );
+  // LENDO do DB (reconstrói o profile a partir das colunas planas)
+  factory LayetteModel.fromDbMap(Map<String, dynamic> m) {
+    final profile = LayetteProfileModel(
+      dueDate: (m['dueDate'] as int?) != null
+          ? DateTime.fromMillisecondsSinceEpoch(m['dueDate'] as int)
+          : null,
+      climate: ClimateEnum.fromString(m['climate'] as String? ?? 'mild'),
+      sexBaby: SexBabyEnum.fromString(m['sexBaby'] as String? ?? 'unknown'),
+      nameBaby: m['nameBaby'] as String?,
+      familyProfile: m['familyProfile'] as String?,
+      layetteDurationInMonths:
+          (m['layetteDurationInMonths'] as num?)?.toInt() ?? 0,
+    );
 
-  Map<String, dynamic> toDbMap() => {
+    return LayetteModel(
+      id: m['id'] as String,
+      userId: m['userId'] as String,
+      layetteProfile: profile,
+      updatedAt: (m['updatedAt'] as num?)?.toInt() ?? 0,
+      syncStatus: (m['syncStatus'] as num?)?.toInt() ?? 1,
+      categories: const [], // itens/categorias via DAOs
+    );
+  }
+
+  /// ESCREVENDO no banco (serializa Map/List para String JSON)
+  Map<String, Object?> toDbMap() => {
         'id': id,
         'userId': userId,
-        'nameBaby': nameBaby,
-        'layetteProfile': (layetteProfile as LayetteProfileModel).toMap(),
+        'nameBaby': layetteProfile.nameBaby,
+        'sexBaby': layetteProfile.sexBaby.name,
+        'dueDate': layetteProfile.dueDate?.millisecondsSinceEpoch,
+        'climate': layetteProfile.climate.name,
+        'familyProfile': layetteProfile.familyProfile,
+        'layetteDurationInMonths': layetteProfile.layetteDurationInMonths,
         'globalProgress': globalProgress,
         'totalSpentAll': totalSpentAll,
         'totalNeededAll': totalNeededAll,
         'totalPurchasedAll': totalPurchasedAll,
-        'updatedAt': updatedAt,
+        'updatedAt': updatedAt, // int epoch OK
         'syncStatus': syncStatus,
-        'categories': categories.map((category) => (category as CategoryModel).toDbMap()).toList(),
-      };
-      
+      }..removeWhere((_, v) => v == null);
+
   Map<String, dynamic> toMap() => {
         'id': id,
         'userId': userId,
-        'nameBaby': nameBaby,
-        'layetteProfile': (layetteProfile as LayetteProfileModel).toMap(),
+        'layetteProfile': LayetteProfileModel(
+          climate: layetteProfile.climate,
+          dueDate: layetteProfile.dueDate,
+          sexBaby: layetteProfile.sexBaby,
+          nameBaby: layetteProfile.nameBaby,
+          familyProfile: layetteProfile.familyProfile,
+          layetteDurationInMonths: layetteProfile.layetteDurationInMonths,
+        ).toMap(),
         'globalProgress': globalProgress,
         'totalSpentAll': totalSpentAll,
         'totalNeededAll': totalNeededAll,
         'totalPurchasedAll': totalPurchasedAll,
         'updatedAt': updatedAt,
         'syncStatus': syncStatus,
-        'categories': categories.map((category) => (category as CategoryModel).toMap()).toList(),
+        'categories': categories
+            .map((category) => (CategoryModel(
+                  id: category.id,
+                  layetteId: category.layetteId,
+                  name: category.name,
+                  icon: category.icon,
+                  isCustom: category.isCustom,
+                  updatedAt: category.updatedAt,
+                  syncStatus: category.syncStatus,
+                  items: category.items,
+                )).toMap())
+            .toList(),
       };
 }

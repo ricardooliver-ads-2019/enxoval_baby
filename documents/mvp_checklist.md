@@ -25,17 +25,15 @@
 
 ## 3️⃣ Onboarding e Criação do Perfil do Enxoval
 - [ ] Implementar fluxo de **onboarding** (telas introdutórias)
-- [ ] Criar formulário de perfil do enxoval (`layetteProfile`) com os campos:
+- [✅] Criar onboarding de perfil do enxoval (`layetteProfile`) com os campos:
   ```json
   {
-    "dueDate": null,
-    "totalBudget": null,
-    "climate": "quente",
     "sexBaby": null,
-    "numberOfBabies": 1,
+    "nameBaby": null,
+    "dueDate": null,
+    "climate": "quente",
     "familyProfile": null,
     "layetteDurationInMonths": 6,
-    "expectedBabySize": null
   }
 - [ ] Salvar perfil no SQLite
 - [ ] Sincronizar perfil no Firestore
@@ -44,10 +42,10 @@
 ---
 
 ## 4️⃣ Importação e Armazenamento da Lista Inicial
-- [ ] [Baixar lista genérica da Vercel]
-- [ ] Converter JSON em entidades
-- [ ] Salvar dados no SQLite
-- [ ] Salvar dados no Firestore
+- [✅] [Baixar lista genérica da Vercel]
+- [✅] Converter JSON em entidades
+- [✅] Salvar dados no SQLite
+- [✅] Salvar dados no Firestore
 - [ ] Criar campo syncStatus para controle de sincronização
 - [ ] Implementar merge e prevenção de duplicatas
 

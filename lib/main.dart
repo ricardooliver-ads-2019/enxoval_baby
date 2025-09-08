@@ -20,6 +20,7 @@ void main() async {
       FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
       return true;
     };
-  Injection().setup();
+  final di = Injection();
+  await di.setup(); // <- agora é async e espera allReady()
   runApp(const EnxovalBabyApp());
 }

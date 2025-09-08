@@ -7,6 +7,7 @@ import 'package:enxoval_baby/app/presentation/onboarding_layette_customization/u
 import 'package:enxoval_baby/app/presentation/onboarding_layette_customization/utils/widgets/onboarding_info_row.dart';
 import 'package:enxoval_baby/app/presentation/onboarding_layette_customization/utils/widgets/onboarding_texts.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class SummaryView extends StatefulWidget {
   final ArgsSummaryView args;
@@ -179,6 +180,7 @@ class _SummaryViewState extends State<SummaryView> {
     builder: (BuildContext context) {
       return ConfirmDialogWidget(
         onTapButtonPrimary: () {
+          context.pop();
           widget.args.nextPage();
         },
       );
