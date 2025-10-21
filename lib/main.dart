@@ -21,6 +21,6 @@ void main() async {
       return true;
     };
   final di = Injection();
-  await di.setup(); // <- agora é async e espera allReady()
+  await di.setup(); 
   runApp(const EnxovalBabyApp());
 }

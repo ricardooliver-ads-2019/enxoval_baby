@@ -32,8 +32,6 @@ mixin CommandHandlerMixin<TWidget extends StatefulWidget> on State<TWidget> {
       } else if (command.completed && result is Ok<TResult>) {
         onSuccess?.call(result.value);
       }
-
-      command.clearResult();
     }
 
     command.addListener(listener);

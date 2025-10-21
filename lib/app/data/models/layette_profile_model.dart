@@ -15,7 +15,7 @@ class LayetteProfileModel  extends LayetteProfileEntity{
 
   factory LayetteProfileModel.fromJson(Map<String, dynamic> json) {
     return LayetteProfileModel(
-      dueDate: DateTime.parse(json['dueDate']),
+      dueDate: json['dueDate'] != null ? DateTime.parse(json['dueDate']) : null,
       climate: ClimateEnum.fromString(json['climate']),
       sexBaby: SexBabyEnum.fromString(json['sexBaby']),
       familyProfile: json['familyProfile'] as String,
