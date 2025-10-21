@@ -1,13 +1,13 @@
 import 'package:design_system/design_system.dart';
 import 'package:enxoval_baby/app/config/injector/injection.dart';
+import 'package:enxoval_baby/app/core/command/command_handler_mixin.dart';
 import 'package:enxoval_baby/app/core/utils/app_strings.dart';
-import 'package:enxoval_baby/app/core/utils/error_messages_enum.dart';
 import 'package:enxoval_baby/app/core/utils/validation_messages_enum.dart';
 import 'package:enxoval_baby/app/core/utils/validators/validations_mixin.dart';
 import 'package:enxoval_baby/app/presentation/auth/login/view_model/login_view_model.dart';
 import 'package:enxoval_baby/app/presentation/auth/utils/auth_routes.dart';
 import 'package:enxoval_baby/app/presentation/auth/utils/auth_strings.dart';
-import 'package:enxoval_baby/app/presentation/auth/utils/widgets/action_buttom_widget.dart';
+import 'package:enxoval_baby/app/core/widgets/action_buttom_widget.dart';
 import 'package:enxoval_baby/app/presentation/auth/utils/widgets/welcome_illustration_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -19,7 +19,7 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> with ValidationsMixin {
+class _LoginScreenState extends State<LoginScreen> with ValidationsMixin, CommandHandlerMixin {
   final _loginViewModel = Injection.inject<LoginViewModel>();
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
@@ -30,7 +30,10 @@ class _LoginScreenState extends State<LoginScreen> with ValidationsMixin {
   @override
   void initState() {
     super.initState();
-    _loginViewModel.login.addListener(_onResult);
+    handleCommand(
+      _loginViewModel.login, 
+      retry: _submitLogin,
+    );
   }
 
   @override
@@ -39,7 +42,6 @@ class _LoginScreenState extends State<LoginScreen> with ValidationsMixin {
     _emailFocus.dispose();
     _passwordController.dispose();
     _passwordFocus.dispose();
-    _loginViewModel.removeListener(_onResult);
     super.dispose();
   }
 
@@ -130,20 +132,4 @@ class _LoginScreenState extends State<LoginScreen> with ValidationsMixin {
     );
   }
 
-  void _onResult() {
-    if (_loginViewModel.login.completed) {
-      _loginViewModel.login.clearResult();
-    }
-    if (_loginViewModel.erroMensage != null && _loginViewModel.login.error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(_loginViewModel.erroMensage!),
-          action: SnackBarAction(
-            label: ErrorMessagesEnum.erro.message,
-            onPressed: _submitLogin,
-          ),
-        ),
-      );
-    }
-  }
 }

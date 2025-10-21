@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 abstract interface class AppFailure implements Exception {
   final String errorMessage;
   final dynamic exception;
@@ -10,12 +12,24 @@ abstract interface class AppFailure implements Exception {
 }
 
 class ClientException extends AppFailure {
+  final int statusCode; // Example status code, can be customized
   ClientException({
+    required this.statusCode,
+    required super.errorMessage,
     super.exception,
     super.stackTrace,
-    required super.errorMessage,
   });
 }
+
+class AppException extends AppFailure {
+  AppException(
+      {super.exception, super.stackTrace, required super.errorMessage}){
+    if (stackTrace != null) {
+      debugPrintStack(label: errorMessage, stackTrace: stackTrace);
+    }
+  }
+}
+
 
 class FromMapException extends AppFailure {
   FromMapException(
@@ -29,5 +43,10 @@ class AuthException extends AppFailure {
 
 class FireStorageException extends AppFailure {
   FireStorageException(
+      {super.exception, super.stackTrace, required super.errorMessage});
+}
+
+class LocalStorageException extends AppFailure {
+  LocalStorageException(
       {super.exception, super.stackTrace, required super.errorMessage});
 }

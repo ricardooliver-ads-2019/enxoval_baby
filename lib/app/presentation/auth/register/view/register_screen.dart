@@ -1,12 +1,12 @@
 import 'package:design_system/design_system.dart';
 import 'package:enxoval_baby/app/config/injector/injection.dart';
+import 'package:enxoval_baby/app/core/command/command_handler_mixin.dart';
 import 'package:enxoval_baby/app/core/utils/app_strings.dart';
-import 'package:enxoval_baby/app/core/utils/error_messages_enum.dart';
 import 'package:enxoval_baby/app/core/utils/validation_messages_enum.dart';
 import 'package:enxoval_baby/app/core/utils/validators/validations_mixin.dart';
 import 'package:enxoval_baby/app/presentation/auth/register/view_model/register_view_model.dart';
 import 'package:enxoval_baby/app/presentation/auth/utils/auth_strings.dart';
-import 'package:enxoval_baby/app/presentation/auth/utils/widgets/action_buttom_widget.dart';
+import 'package:enxoval_baby/app/core/widgets/action_buttom_widget.dart';
 import 'package:enxoval_baby/app/presentation/auth/utils/widgets/welcome_illustration_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -17,7 +17,7 @@ class RegisterScreen extends StatefulWidget {
   State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> with ValidationsMixin {
+class _RegisterScreenState extends State<RegisterScreen> with ValidationsMixin, CommandHandlerMixin {
   final _registerViewModel = Injection.inject<RegisterViewModel>();
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
@@ -33,7 +33,7 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationsMixin {
   @override
   void initState() {
     super.initState();
-    _registerViewModel.register.addListener(_onResult);
+    handleCommand(_registerViewModel.register, retry: _submitForm);
   }
 
   @override
@@ -44,7 +44,6 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationsMixin {
     _passwordFocus.dispose();
     _confirmPasswordController.dispose();
     _confirmPasswordFocus.dispose();
-    _registerViewModel.removeListener(_onResult);
     super.dispose();
   }
 
@@ -123,21 +122,4 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationsMixin {
     }
   }
 
-  void _onResult() {
-    if (_registerViewModel.register.completed) {
-      _registerViewModel.register.clearResult();
-    }
-    if (_registerViewModel.erroMensage != null &&
-        _registerViewModel.register.error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(_registerViewModel.erroMensage!),
-          action: SnackBarAction(
-            label: ErrorMessagesEnum.erro.message,
-            onPressed: _submitForm,
-          ),
-        ),
-      );
-    }
-  }
 }
