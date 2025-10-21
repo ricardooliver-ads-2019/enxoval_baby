@@ -23,6 +23,7 @@ import 'package:enxoval_baby/app/presentation/auth/forgot_password/view_model/fo
 import 'package:enxoval_baby/app/presentation/auth/login/view_model/login_view_model.dart';
 import 'package:enxoval_baby/app/presentation/auth/logout/view_model/logout_view_model.dart';
 import 'package:enxoval_baby/app/presentation/auth/register/view_model/register_view_model.dart';
+import 'package:enxoval_baby/app/presentation/home_enxoval/view_model/home_enxoval_view_model.dart';
 import 'package:enxoval_baby/app/presentation/onboarding_layette_customization/view_model/onboarding_layette_customization_page_view_model.dart';
 import 'package:get_it/get_it.dart';
 import 'package:sqflite/sqflite.dart';
@@ -114,6 +115,12 @@ class Injection {
     );
     inject.registerFactory(
       () => OnboardingLayetteCustomizationPageViewModel(
+        layettesRepository: inject(),
+      ),
+    );
+
+    inject.registerFactory(
+      () => HomeEnxovalViewModel(
         layettesRepository: inject(),
       ),
     );
